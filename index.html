@@ -265,6 +265,17 @@
           <input type="text" id="placeName" name="placeName" placeholder="pl. Családi Kávézó" required>
         </div>
         <div class="form-group">
+          <label for="placeType">Ajánlás típusa <span class="required">*</span></label>
+          <select id="placeType" name="placeType" required>
+            <option value="">-- Válassz típust --</option>
+            <option value="kávézó">☕ Kávézó</option>
+            <option value="étterem">🍽️ Étterem</option>
+            <option value="játszóház">🎪 Játszóház</option>
+            <option value="konditerem">💪 Edzőterem</option>
+            <option value="szállás">🏨 Szállás</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="recommendationText">Ajánlás szövege <span class="required">*</span></label>
           <textarea id="recommendationText" name="recommendationText" rows="5" placeholder="Írd le, miért ajánlod ezt a helyet más szülőknek..." required></textarea>
         </div>

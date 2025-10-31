@@ -754,6 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const formData = {
                 placeName: document.getElementById('placeName')?.value,
+                placeType: document.getElementById('placeType')?.value,
                 recommendationText: document.getElementById('recommendationText')?.value,
                 mapsLink: document.getElementById('mapsLink')?.value || null,
                 amenities: []
