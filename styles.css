@@ -222,6 +222,25 @@ body {
     font-size: 1.2rem;
 }
 
+.footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border-color);
+    padding: 24px;
+    text-align: center;
+    margin-top: 48px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer p {
+    margin: 0;
+}
+
+.footer strong {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
