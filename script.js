@@ -402,48 +402,79 @@ const searchInput = document.getElementById('searchInput');
 let searchTimeout;
 let isShowingSavedPlaces = false;
 
-searchInput.addEventListener('input', function(e) {
-    const searchValue = e.target.value.trim().toLowerCase();
+// Aktív filter kezelése
+let activeFilter = 'all';
+
+// Filter tabok kezelése
+function initializeFilterTabs() {
+    const filterTabs = document.querySelectorAll('.filter-tab');
     
-    // Ha a keresőmezőbe írunk, akkor nem a mentett helyeket mutatjuk
-    isShowingSavedPlaces = false;
-    
-    // Gomb szövegének visszaállítása "Listám"-ra, ha "Összes" állapotban volt
-    const myListsButton = document.getElementById('myListsButton');
-    const myListsButtonText = myListsButton ? myListsButton.querySelector('span:last-child') : null;
-    if (myListsButtonText && myListsButtonText.textContent === 'Összes') {
-        myListsButtonText.textContent = 'Listám';
-        myListsButton.querySelector('span:first-child').textContent = '📋';
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Összes tab active osztály eltávolítása
+            filterTabs.forEach(t => t.classList.remove('active'));
+            // Aktuális tab active osztály hozzáadása
+            tab.classList.add('active');
+            // Aktív filter frissítése
+            activeFilter = tab.dataset.filter;
+            
+            // Helyek szűrése és megjelenítése
+            filterAndDisplayPlaces();
+        });
+    });
+}
+
+// Helyek szűrése és megjelenítése
+function filterAndDisplayPlaces() {
+    // Ha mentett helyeket mutatunk, ne szűrjünk
+    if (isShowingSavedPlaces) {
+        return;
     }
     
-    // Debounce - várunk 300ms-et mielőtt keresünk
-    clearTimeout(searchTimeout);
+    const searchValue = searchInput ? searchInput.value.toLowerCase().trim() : '';
     
-    searchTimeout = setTimeout(() => {
-        if (searchValue.length > 0) {
-            // Szűrés a keresési érték alapján
-            const filtered = mockPlaces.filter(place => 
-                place.name.toLowerCase().includes(searchValue) ||
-                place.address.toLowerCase().includes(searchValue) ||
-                place.type.toLowerCase().includes(searchValue)
-            );
-            
-            // Ha van találat, azokat mutatjuk, különben 4 véletlenszerűt
-            if (filtered.length > 0) {
-                displayPlaces(filtered.slice(0, 4));
-            } else {
-                displayPlaces(getRandomPlaces(4));
-            }
-        } else {
-            // Ha üres a keresőmező, mutatunk 4 véletlenszerű helyszínt
-            displayPlaces(getRandomPlaces(4));
-        }
-    }, 300);
-});
+    let filteredPlaces;
+    
+    // Ha van aktív filter és nem "all"
+    if (activeFilter && activeFilter !== 'all') {
+        filteredPlaces = mockPlaces.filter(place => place.type === activeFilter);
+    } else {
+        filteredPlaces = [...mockPlaces];
+    }
+    
+    // Keresőmező szerinti szűrés
+    if (searchValue) {
+        filteredPlaces = filteredPlaces.filter(place => 
+            place.name.toLowerCase().includes(searchValue) ||
+            place.address.toLowerCase().includes(searchValue) ||
+            place.type.toLowerCase().includes(searchValue)
+        );
+    }
+    
+    // Ha van találat, azokat mutatjuk (maximum 4-et), különben 4 véletlenszerűt
+    if (filteredPlaces.length > 0) {
+        displayPlaces(filteredPlaces.slice(0, 4));
+    } else {
+        displayPlaces(getRandomPlaces(4));
+    }
+}
 
 // Oldal betöltésekor mutatunk 4 véletlenszerű helyszínt
 document.addEventListener('DOMContentLoaded', () => {
     displayPlaces(getRandomPlaces(4));
+    
+    // Filter tabok inicializálása
+    initializeFilterTabs();
+    
+    // Keresőmező eseménykezelő - debounce
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterAndDisplayPlaces();
+            }, 300); // 300ms debounce
+        });
+    }
     
     // Login Modal kezelés
     const loginModal = document.getElementById('loginModal');

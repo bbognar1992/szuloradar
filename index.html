@@ -9,20 +9,9 @@
 </head>
 <body>
   <div class="container">
-    <aside class="sidebar">
-      <div class="logo-container">
-        <img src="logo.png" alt="SzülőRadar" class="logo" id="logo">
-      </div>
-      <h2>Szűrők</h2>
-      <label><input type="checkbox" class="filter" value="kávézó" checked> Kávézó</label>
-      <label><input type="checkbox" class="filter" value="étterem" checked> Étterem</label>
-      <label><input type="checkbox" class="filter" value="konditerem" checked> Edzőterem</label>
-      <label><input type="checkbox" class="filter" value="szállás" checked> Szállás</label>
-    </aside>
-
-    <main class="main">
-      <header class="main-header">
-        <h1>Fedezd fel a gyerekbarát helyeket</h1>
+    <header class="main-header">
+      <h1>Fedezd fel a gyerekbarát helyeket</h1>
+      <div class="header-right">
         <div class="user-profile" id="loginTrigger" style="display: block;">
           <div class="profile-info">
             <span class="profile-name">Bejelentkezés</span>
@@ -58,9 +47,29 @@
             </div>
           </div>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <input type="text" id="searchInput" placeholder="Keresés hely név alapján..." aria-label="Keresés">
+    <div class="horizontal-panel">
+      <div class="logo-container">
+        <img src="logo.png" alt="SzülőRadar" class="logo" id="logo">
+      </div>
+
+      <div class="search-box" id="searchBox">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Keresés hely név alapján..." aria-label="Keresés" class="search-input-hidden">
+      </div>
+
+      <div class="filters-tabs">
+        <button type="button" class="filter-tab active" data-filter="all">Összes</button>
+        <button type="button" class="filter-tab" data-filter="kávézó">Kávézó</button>
+        <button type="button" class="filter-tab" data-filter="étterem">Étterem</button>
+        <button type="button" class="filter-tab" data-filter="konditerem">Edzőterem</button>
+        <button type="button" class="filter-tab" data-filter="szállás">Szállás</button>
+      </div>
+    </div>
+
+    <main class="main">
 
       <div id="placesContainer" class="place-list">
         <!-- JS tölti fel -->
