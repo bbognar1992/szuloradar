@@ -701,8 +701,81 @@ document.addEventListener('DOMContentLoaded', () => {
     if (submitRecommendation) {
         submitRecommendation.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Ajánlás beküldése (még fejlesztés alatt)');
+            const submitRecommendationModal = document.getElementById('submitRecommendationModal');
+            if (submitRecommendationModal) {
+                submitRecommendationModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
             closeHamburgerMenu();
+        });
+    }
+    
+    // Submit Recommendation Modal kezelés
+    const submitRecommendationModal = document.getElementById('submitRecommendationModal');
+    const closeSubmitRecommendationModal = document.getElementById('closeSubmitRecommendationModal');
+    const cancelSubmitRecommendation = document.getElementById('cancelSubmitRecommendation');
+    const submitRecommendationForm = document.getElementById('submitRecommendationForm');
+    
+    function closeSubmitRecommendationModalFunc() {
+        if (submitRecommendationModal) {
+            submitRecommendationModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+    
+    if (closeSubmitRecommendationModal) {
+        closeSubmitRecommendationModal.addEventListener('click', closeSubmitRecommendationModalFunc);
+    }
+    
+    if (cancelSubmitRecommendation) {
+        cancelSubmitRecommendation.addEventListener('click', closeSubmitRecommendationModalFunc);
+    }
+    
+    // Modal bezárása háttérre kattintva
+    if (submitRecommendationModal) {
+        submitRecommendationModal.addEventListener('click', (e) => {
+            if (e.target === submitRecommendationModal) {
+                closeSubmitRecommendationModalFunc();
+            }
+        });
+    }
+    
+    // Modal bezárása Escape billentyűvel
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && submitRecommendationModal && submitRecommendationModal.classList.contains('active')) {
+            closeSubmitRecommendationModalFunc();
+        }
+    });
+    
+    // Form submit kezelés
+    if (submitRecommendationForm) {
+        submitRecommendationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                placeName: document.getElementById('placeName')?.value,
+                recommendationText: document.getElementById('recommendationText')?.value,
+                mapsLink: document.getElementById('mapsLink')?.value || null,
+                amenities: []
+            };
+            
+            // Checklist értékek összegyűjtése
+            const checkedAmenities = submitRecommendationForm.querySelectorAll('input[name="amenities"]:checked');
+            if (checkedAmenities.length === 0) {
+                alert('Kérjük, válassz legalább egy opciót a checklist-ből!');
+                return;
+            }
+            
+            checkedAmenities.forEach(checkbox => {
+                formData.amenities.push(checkbox.value);
+            });
+            
+            console.log('Ajánlás beküldve:', formData);
+            alert('Köszönjük az ajánlást! A helyszín átnézése után megjelenik az oldalon.');
+            
+            // Form reset
+            submitRecommendationForm.reset();
+            closeSubmitRecommendationModalFunc();
         });
     }
     
