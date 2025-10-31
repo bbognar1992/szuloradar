@@ -28,14 +28,19 @@
             <span class="profile-name">Bejelentkezés</span>
           </div>
         </div>
-        <div class="user-profile hamburger-menu" id="hamburgerMenu" style="display: none;">
-          <button class="hamburger-button" id="hamburgerButton" aria-label="Menü">
-            <span></span>
-            <span></span>
-            <span></span>
+        <div class="header-right-buttons" id="headerRightButtons" style="display: none;">
+          <button class="my-lists-button" id="myListsButton">
+            <span>📋</span>
+            <span>Listám</span>
           </button>
-          <!-- Hamburger Menü -->
-          <div class="hamburger-menu-dropdown" id="hamburgerMenuDropdown">
+          <div class="user-profile hamburger-menu" id="hamburgerMenu">
+            <button class="hamburger-button" id="hamburgerButton" aria-label="Menü">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <!-- Hamburger Menü -->
+            <div class="hamburger-menu-dropdown" id="hamburgerMenuDropdown">
         <nav class="hamburger-nav">
           <a href="#" class="hamburger-menu-item" id="myAccount">
             <span>👤</span>
@@ -50,6 +55,7 @@
             <span>Kijelentkezés</span>
           </a>
         </nav>
+            </div>
           </div>
         </div>
       </header>
@@ -189,6 +195,26 @@
           <button type="submit" class="save-button">Mentés</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- My Lists Modal -->
+  <div class="my-lists-modal" id="myListsModal">
+    <div class="my-lists-modal-content">
+      <button class="my-lists-modal-close" id="closeMyListsModal" aria-label="Bezárás">&times;</button>
+      <div class="my-lists-header">
+        <h2>Listám</h2>
+        <p>Mentett kedvenc helyek kezelése</p>
+      </div>
+      <div class="my-lists-body">
+        <div id="savedPlacesContainer" class="saved-places-container">
+          <!-- JS tölti fel a mentett helyeket -->
+        </div>
+        <div id="emptyListMessage" class="empty-list-message" style="display: none;">
+          <p>🔖 Még nincsenek mentett helyek a listádon.</p>
+          <p>Helyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket.</p>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -1,3 +1,31 @@
+// Mentett helyek kezelése (localStorage)
+function getSavedPlaces() {
+    const saved = localStorage.getItem('savedPlaces');
+    return saved ? JSON.parse(saved) : [];
+}
+
+function savePlace(place) {
+    const saved = getSavedPlaces();
+    const exists = saved.some(p => p.name === place.name && p.address === place.address);
+    if (!exists) {
+        saved.push(place);
+        localStorage.setItem('savedPlaces', JSON.stringify(saved));
+        return true;
+    }
+    return false;
+}
+
+function removePlace(placeName, placeAddress) {
+    const saved = getSavedPlaces();
+    const filtered = saved.filter(p => !(p.name === placeName && p.address === placeAddress));
+    localStorage.setItem('savedPlaces', JSON.stringify(filtered));
+}
+
+function isPlaceSaved(placeName, placeAddress) {
+    const saved = getSavedPlaces();
+    return saved.some(p => p.name === placeName && p.address === placeAddress);
+}
+
 // Kitalált helyszínek adatbázis
 const mockPlaces = [
     {
@@ -280,11 +308,74 @@ function showPlaceDetail(place) {
             </ul>
         </div>
         ` : ''}
+        
+        <div class="place-detail-actions">
+            ${isPlaceSaved(place.name, place.address) ? `
+                <button class="remove-from-list-button" onclick="removeFromList('${place.name}', '${place.address}')">
+                    🗑️ Törlés a listából
+                </button>
+            ` : `
+                <button class="add-to-list-button" onclick="addToList('${place.name}', '${place.address}', '${place.type}', ${place.rating})">
+                    ➕ Listához adás
+                </button>
+            `}
+        </div>
     `;
     
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
+
+// Listához adás funkció
+window.addToList = function(name, address, type, rating) {
+    const place = {
+        name: name,
+        address: address,
+        type: type,
+        rating: rating
+    };
+    
+    if (savePlace(place)) {
+        alert('Hely hozzáadva a listához!');
+        const savedPlace = mockPlaces.find(p => p.name === name && p.address === address) || place;
+        showPlaceDetail(savedPlace);
+        
+        // Ha a mentett helyek nézetben vagyunk, frissítsük a listát
+        if (isShowingSavedPlaces) {
+            const saved = getSavedPlaces();
+            const placesToDisplay = saved.map(savedPlace => {
+                return mockPlaces.find(p => p.name === savedPlace.name && p.address === savedPlace.address) || savedPlace;
+            });
+            displayPlaces(placesToDisplay);
+        }
+    } else {
+        alert('Ez a hely már a listában van!');
+    }
+};
+
+// Listából törlés funkció
+window.removeFromList = function(name, address) {
+    if (confirm('Biztosan törölni szeretnéd ezt a helyet a listából?')) {
+        removePlace(name, address);
+        alert('Hely törölve a listából!');
+        const place = mockPlaces.find(p => p.name === name && p.address === address);
+        if (place) {
+            showPlaceDetail(place);
+        }
+        // Ha a mentett helyek nézetben vagyunk, frissítsük a listát
+        if (isShowingSavedPlaces) {
+            const saved = getSavedPlaces();
+            if (saved.length === 0) {
+                displayPlaces([]);
+            } else {
+                const placesToDisplay = saved.map(savedPlace => {
+                    return mockPlaces.find(p => p.name === savedPlace.name && p.address === savedPlace.address) || savedPlace;
+                });
+                displayPlaces(placesToDisplay);
+            }
+        }
+    }
+};
 
 // Helyszínek megjelenítése
 function displayPlaces(places) {
@@ -292,7 +383,11 @@ function displayPlaces(places) {
     container.innerHTML = '';
     
     if (places.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">Nincs találat</p>';
+        if (isShowingSavedPlaces) {
+            container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">🔖 Még nincsenek mentett helyek a listádon.<br>Helyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket.</p>';
+        } else {
+            container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">Nincs találat</p>';
+        }
         return;
     }
     
@@ -305,9 +400,21 @@ function displayPlaces(places) {
 // Keresőmező eseménykezelő
 const searchInput = document.getElementById('searchInput');
 let searchTimeout;
+let isShowingSavedPlaces = false;
 
 searchInput.addEventListener('input', function(e) {
     const searchValue = e.target.value.trim().toLowerCase();
+    
+    // Ha a keresőmezőbe írunk, akkor nem a mentett helyeket mutatjuk
+    isShowingSavedPlaces = false;
+    
+    // Gomb szövegének visszaállítása "Listám"-ra, ha "Összes" állapotban volt
+    const myListsButton = document.getElementById('myListsButton');
+    const myListsButtonText = myListsButton ? myListsButton.querySelector('span:last-child') : null;
+    if (myListsButtonText && myListsButtonText.textContent === 'Összes') {
+        myListsButtonText.textContent = 'Listám';
+        myListsButton.querySelector('span:first-child').textContent = '📋';
+    }
     
     // Debounce - várunk 300ms-et mielőtt keresünk
     clearTimeout(searchTimeout);
@@ -386,13 +493,13 @@ document.addEventListener('DOMContentLoaded', () => {
             loginModal.classList.remove('active');
             document.body.style.overflow = '';
             
-            // Bejelentkezés gomb elrejtése, hamburger menü megjelenítése
+            // Bejelentkezés gomb elrejtése, hamburger menü és listám gomb megjelenítése
             const loginTrigger = document.getElementById('loginTrigger');
-            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const headerRightButtons = document.getElementById('headerRightButtons');
             
-            if (loginTrigger && hamburgerMenu) {
+            if (loginTrigger && headerRightButtons) {
                 loginTrigger.style.display = 'none';
-                hamburgerMenu.style.display = 'flex';
+                headerRightButtons.style.display = 'flex';
                 
                 // Hamburger menü inicializálása ha még nem történt
                 initializeHamburgerMenu();
@@ -603,20 +710,79 @@ document.addEventListener('DOMContentLoaded', () => {
         logout.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // Kijelentkezés: hamburger menü elrejtése, bejelentkezés gomb megjelenítése
-            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            // Kijelentkezés: hamburger menü és listám gomb elrejtése, bejelentkezés gomb megjelenítése
+            const headerRightButtons = document.getElementById('headerRightButtons');
             const loginTrigger = document.getElementById('loginTrigger');
             
-            if (hamburgerMenu && loginTrigger) {
-                hamburgerMenu.style.display = 'none';
+            if (headerRightButtons && loginTrigger) {
+                headerRightButtons.style.display = 'none';
                 loginTrigger.style.display = 'block';
             }
             
             closeHamburgerMenu();
+        });
+    }
+    
+    // Listám/Összes gomb kezelés - mentett helyek vagy összes rekord megjelenítése
+    const myListsButton = document.getElementById('myListsButton');
+    const myListsButtonText = myListsButton ? myListsButton.querySelector('span:last-child') : null;
+    
+    function showAllPlaces() {
+        // Összes rekord megjelenítése
+        isShowingSavedPlaces = false;
+        // Keresőmező ürítése
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        
+        displayPlaces(getRandomPlaces(4));
+        
+        // Gomb szövegének visszaállítása "Listám"-ra
+        if (myListsButtonText) {
+            myListsButtonText.textContent = 'Listám';
+            myListsButton.querySelector('span:first-child').textContent = '📋';
+        }
+    }
+    
+    function showSavedPlaces() {
+        const saved = getSavedPlaces();
+        
+        if (saved.length === 0) {
+            alert('Még nincsenek mentett helyek a listádon.\nHelyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket.');
+            return;
+        }
+        
+        // Mentett helyek megjelenítése a fő tartalomban
+        isShowingSavedPlaces = true;
+        // Keresőmező ürítése
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        
+        const placesToDisplay = saved.map(savedPlace => {
+            return mockPlaces.find(p => p.name === savedPlace.name && p.address === savedPlace.address) || savedPlace;
+        });
+        
+        displayPlaces(placesToDisplay);
+        
+        // Gomb szövegének módosítása "Összes"-re
+        if (myListsButtonText) {
+            myListsButtonText.textContent = 'Összes';
+            myListsButton.querySelector('span:first-child').textContent = '🌐';
+        }
+    }
+    
+    if (myListsButton) {
+        myListsButton.addEventListener('click', (e) => {
+            e.preventDefault();
             
-            // Opcionális: localStorage vagy sessionStorage törlés
-            // localStorage.removeItem('user');
-            // sessionStorage.clear();
+            // Ha "Listám" állapotban van, akkor mentett helyeket mutatunk
+            // Ha "Összes" állapotban van, akkor összes rekordot mutatunk
+            if (myListsButtonText && myListsButtonText.textContent === 'Listám') {
+                showSavedPlaces();
+            } else {
+                showAllPlaces();
+            }
         });
     }
     
