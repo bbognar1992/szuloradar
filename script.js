@@ -139,6 +139,46 @@ const mockPlaces = [
         hours: "H-P: 6:00-22:00, Szo-V: 8:00-20:00",
         description: "Komplex wellness központ konditeremmel, szaunával, masszázszal és felügyelt gyerekteremmel.",
         amenities: ["Wellness", "Szauna", "Masszázs", "Gyerekfelügyelet"]
+    },
+    {
+        name: "Családi Panzió",
+        type: "szállás",
+        rating: 4.6,
+        address: "Kossuth Lajos utca 32, Budapest",
+        phone: "+36 1 234 5692",
+        hours: "Check-in: 14:00, Check-out: 11:00",
+        description: "Barátságos panzió családok számára. Családi szobák, játszóterem és reggeliző. Központi elhelyezés.",
+        amenities: ["Családi szobák", "Játszóterem", "Reggeliző", "Ingyenes WiFi"]
+    },
+    {
+        name: "Kids Hotel",
+        type: "szállás",
+        rating: 4.9,
+        address: "Hegyalja út 45, Budapest",
+        phone: "+36 1 234 5693",
+        hours: "Check-in: 15:00, Check-out: 12:00",
+        description: "Prémium gyerekbarát szálloda külön játszószobákkal, gyerekfelügyelettel és családi programokkal.",
+        amenities: ["Gyerekfelügyelet", "Játszószobák", "Családi programok", "Wellness"]
+    },
+    {
+        name: "Baba Barát Szálloda",
+        type: "szállás",
+        rating: 4.7,
+        address: "Ferenciek tere 8, Budapest",
+        phone: "+36 1 234 5694",
+        hours: "Check-in: 14:00, Check-out: 11:00",
+        description: "Kifejezetten babákkal utazó családoknak tervezett szálloda. Bababútorzat, pelenkázó és babakocsibarát infrastruktúra.",
+        amenities: ["Bababútorzat", "Pelenkázó", "Babakocsibarát", "Babakocsi bérlés"]
+    },
+    {
+        name: "Vidám Vendégház",
+        type: "szállás",
+        rating: 4.5,
+        address: "Ó utca 22, Budapest",
+        phone: "+36 1 234 5695",
+        hours: "Check-in: 15:00, Check-out: 10:00",
+        description: "Hangulatos vendégház kerttel, játszóudvarral. Tökéletes hosszabb tartózkodásra családokkal.",
+        amenities: ["Kert", "Játszóudvar", "Teljes konyha", "Parkolás"]
     }
 ];
 
@@ -158,7 +198,8 @@ function createPlaceCard(place) {
         'kávézó': '☕ Kávézó',
         'játszóház': '🎪 Játszóház',
         'étterem': '🍽️ Étterem',
-        'konditerem': '💪 Konditerem'
+        'konditerem': '💪 Konditerem',
+        'szállás': '🏨 Szállás'
     };
     
     card.innerHTML = `
@@ -186,7 +227,8 @@ function showPlaceDetail(place) {
         'kávézó': '☕ Kávézó',
         'játszóház': '🎪 Játszóház',
         'étterem': '🍽️ Étterem',
-        'konditerem': '💪 Konditerem'
+        'konditerem': '💪 Konditerem',
+        'szállás': '🏨 Szállás'
     };
     
     header.innerHTML = `
