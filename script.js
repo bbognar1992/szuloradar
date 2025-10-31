@@ -207,6 +207,96 @@ const mockPlaces = [
         hours: "Check-in: 15:00, Check-out: 10:00",
         description: "Hangulatos vendégház kerttel, játszóudvarral. Tökéletes hosszabb tartózkodásra családokkal.",
         amenities: ["Kert", "Játszóudvar", "Teljes konyha", "Parkolás"]
+    },
+    {
+        name: "Napfényes Kávézó",
+        type: "kávézó",
+        rating: 4.4,
+        address: "Madách Imre út 12, Budapest",
+        phone: "+36 1 234 5696",
+        hours: "H-V: 8:00-19:00",
+        description: "Világos, napos kávézó nagy ablakokkal és terasszal. Van belső játszó sarok és babakocsibarát bejárat.",
+        amenities: ["Terasz", "Játszó sarok", "Babakocsibarát", "Nagy ablakok"]
+    },
+    {
+        name: "Falatozó Étterem",
+        type: "étterem",
+        rating: 4.3,
+        address: "Erzsébet körút 35, Budapest",
+        phone: "+36 1 234 5697",
+        hours: "H-V: 11:00-21:30",
+        description: "Középkategóriás étterem családi atmoszférával. Gyors szolgáltatás, nagy adagok és gyerekbarát árak.",
+        amenities: ["Gyors szolgáltatás", "Nagy adagok", "Gyerekbarát árak", "Parkolás"]
+    },
+    {
+        name: "Mozgás Csarnok",
+        type: "konditerem",
+        rating: 4.6,
+        address: "Fő utca 58, Budapest",
+        phone: "+36 1 234 5698",
+        hours: "H-P: 5:00-23:00, Szo-V: 6:00-22:00",
+        description: "Modern konditerem családok számára. Óriási terület, sok gép és külön gyerekterem felügyelet mellett.",
+        amenities: ["Nagy terület", "Sok gép", "Gyerekterem", "24/7 elérés"]
+    },
+    {
+        name: "Családi Szálloda",
+        type: "szállás",
+        rating: 4.8,
+        address: "Margit körút 25, Budapest",
+        phone: "+36 1 234 5699",
+        hours: "Check-in: 14:00, Check-out: 11:00",
+        description: "4 csillagos szálloda kifejezetten családok számára. Uszoda, játszószoba és gyerekfelügyelet.",
+        amenities: ["Uszoda", "Játszószoba", "Gyerekfelügyelet", "Reggeli"]
+    },
+    {
+        name: "Környezetbarát Kávézó",
+        type: "kávézó",
+        rating: 4.5,
+        address: "Bartók Béla út 67, Budapest",
+        phone: "+36 1 234 5700",
+        hours: "H-V: 7:00-18:00",
+        description: "Bio kávézó egészséges snackekkel és környezetbarát megközelítéssel. Játszó sarok organikus játékokkal.",
+        amenities: ["Bio kávé", "Egészséges snackek", "Játszó sarok", "Környezetbarát"]
+    },
+    {
+        name: "Gourmet Családi Étterem",
+        type: "étterem",
+        rating: 4.7,
+        address: "Ráday utca 8, Budapest",
+        phone: "+36 1 234 5701",
+        hours: "H-V: 12:00-22:00",
+        description: "Minőségi ételek családi hangulattal. Profi szakácsok, friss alapanyagok és kreatív gyerekmenü.",
+        amenities: ["Minőségi ételek", "Kreatív menü", "Friss alapanyagok", "Terasz"]
+    },
+    {
+        name: "Extrém Sport Klub",
+        type: "konditerem",
+        rating: 4.4,
+        address: "Thököly út 78, Budapest",
+        phone: "+36 1 234 5702",
+        hours: "H-V: 6:00-22:00",
+        description: "Szakértő edzőkkel és speciális gyerekprogramokkal. Rock climbing fal, úszás és csoportos edzések.",
+        amenities: ["Rock climbing", "Úszás", "Csoportos edzések", "Szakértő edzők"]
+    },
+    {
+        name: "Pesti Panzió",
+        type: "szállás",
+        rating: 4.6,
+        address: "Arany János utca 32, Budapest",
+        phone: "+36 1 234 5703",
+        hours: "Check-in: 14:00, Check-out: 11:00",
+        description: "Hangulatos panzió jó ár-érték aránnyal. Családi szobák, központi elhelyezés és barátságos személyzet.",
+        amenities: ["Jó ár-érték", "Központi", "Barátságos", "CSaládi szobák"]
+    },
+    {
+        name: "Cukrászda & Kávézó",
+        type: "kávézó",
+        rating: 4.8,
+        address: "Váci utca 89, Budapest",
+        phone: "+36 1 234 5704",
+        hours: "H-V: 8:00-20:00",
+        description: "Házi készítésű sütemények és prémium kávék. Játszó sarok a gyerekeknek és kellemes környezet a szülőknek.",
+        amenities: ["Házi sütemények", "Prémium kávé", "Játszó sarok", "Kellemes környezet"]
     }
 ];
 
@@ -346,7 +436,7 @@ window.addToList = function(name, address, type, rating) {
             const placesToDisplay = saved.map(savedPlace => {
                 return mockPlaces.find(p => p.name === savedPlace.name && p.address === savedPlace.address) || savedPlace;
             });
-            displayPlaces(placesToDisplay);
+            displayPlaces(placesToDisplay, true);
         }
     } else {
         alert('Ez a hely már a listában van!');
@@ -366,35 +456,55 @@ window.removeFromList = function(name, address) {
         if (isShowingSavedPlaces) {
             const saved = getSavedPlaces();
             if (saved.length === 0) {
-                displayPlaces([]);
+                displayPlaces([], true);
             } else {
                 const placesToDisplay = saved.map(savedPlace => {
                     return mockPlaces.find(p => p.name === savedPlace.name && p.address === savedPlace.address) || savedPlace;
                 });
-                displayPlaces(placesToDisplay);
+                displayPlaces(placesToDisplay, true);
             }
         }
     }
 };
 
-// Helyszínek megjelenítése
-function displayPlaces(places) {
+// Helyszínek megjelenítése paginációval
+function displayPlaces(places, resetPage = false) {
     const container = document.getElementById('placesContainer');
-    container.innerHTML = '';
+    
+    if (resetPage) {
+        currentPage = 1;
+    }
     
     if (places.length === 0) {
+        container.innerHTML = '';
         if (isShowingSavedPlaces) {
             container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">🔖 Még nincsenek mentett helyek a listádon.<br>Helyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket.</p>';
         } else {
             container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">Nincs találat</p>';
         }
+        // Pagináció elrejtése
+        const pagination = document.getElementById('pagination');
+        if (pagination) {
+            pagination.style.display = 'none';
+        }
         return;
     }
     
-    places.forEach(place => {
+    // Pagináció számítása
+    const totalPages = Math.ceil(places.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedPlaces = places.slice(startIndex, endIndex);
+    
+    // Kártyák megjelenítése
+    container.innerHTML = '';
+    paginatedPlaces.forEach(place => {
         const card = createPlaceCard(place);
         container.appendChild(card);
     });
+    
+    // Pagináció UI generálása
+    renderPagination(totalPages, places.length);
 }
 
 // Keresőmező eseménykezelő
@@ -404,6 +514,10 @@ let isShowingSavedPlaces = false;
 
 // Aktív filter kezelése
 let activeFilter = 'all';
+
+// Pagináció változók
+let currentPage = 1;
+const itemsPerPage = 12;
 
 // Filter tabok kezelése
 function initializeFilterTabs() {
@@ -451,17 +565,158 @@ function filterAndDisplayPlaces() {
         );
     }
     
-    // Ha van találat, azokat mutatjuk (maximum 4-et), különben 4 véletlenszerűt
+    // Ha van találat, azokat mutatjuk, különben véletlenszerűt
     if (filteredPlaces.length > 0) {
-        displayPlaces(filteredPlaces.slice(0, 4));
+        displayPlaces(filteredPlaces, true);
     } else {
-        displayPlaces(getRandomPlaces(4));
+        displayPlaces(getRandomPlaces(12), true);
     }
 }
 
-// Oldal betöltésekor mutatunk 4 véletlenszerű helyszínt
+// Pagináció UI generálása
+function renderPagination(totalPages, totalItems) {
+    let pagination = document.getElementById('pagination');
+    
+    if (!pagination) {
+        pagination = document.createElement('div');
+        pagination.id = 'pagination';
+        pagination.className = 'pagination';
+        const main = document.querySelector('.main');
+        if (main) {
+            main.appendChild(pagination);
+        }
+    }
+    
+    if (totalPages <= 1) {
+        pagination.style.display = 'none';
+        return;
+    }
+    
+    pagination.style.display = 'flex';
+    
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+    
+    pagination.innerHTML = `
+        <div class="pagination-info">
+            <span>${startItem}-${endItem} / ${totalItems} találat</span>
+        </div>
+        <div class="pagination-controls">
+            <button class="pagination-btn" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>
+                ← Előző
+            </button>
+            <div class="pagination-numbers">
+                ${generatePaginationNumbers(totalPages)}
+            </div>
+            <button class="pagination-btn" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>
+                Következő →
+            </button>
+        </div>
+    `;
+    
+    // Event listeners
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                filterAndDisplayPlaces();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const searchValue = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            let filteredPlaces;
+            
+            if (activeFilter && activeFilter !== 'all') {
+                filteredPlaces = mockPlaces.filter(place => place.type === activeFilter);
+            } else {
+                filteredPlaces = [...mockPlaces];
+            }
+            
+            if (searchValue) {
+                filteredPlaces = filteredPlaces.filter(place => 
+                    place.name.toLowerCase().includes(searchValue) ||
+                    place.address.toLowerCase().includes(searchValue) ||
+                    place.type.toLowerCase().includes(searchValue)
+                );
+            }
+            
+            const totalPages = Math.ceil(filteredPlaces.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                filterAndDisplayPlaces();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    }
+    
+    // Oldalszámok kattintása
+    const pageNumbers = pagination.querySelectorAll('.page-number');
+    pageNumbers.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = parseInt(btn.dataset.page);
+            if (page !== currentPage) {
+                currentPage = page;
+                filterAndDisplayPlaces();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    });
+}
+
+// Oldalszámok generálása
+function generatePaginationNumbers(totalPages) {
+    const maxVisible = 5;
+    let startPage, endPage;
+    
+    if (totalPages <= maxVisible) {
+        startPage = 1;
+        endPage = totalPages;
+    } else {
+        if (currentPage <= 3) {
+            startPage = 1;
+            endPage = maxVisible;
+        } else if (currentPage >= totalPages - 2) {
+            startPage = totalPages - maxVisible + 1;
+            endPage = totalPages;
+        } else {
+            startPage = currentPage - 2;
+            endPage = currentPage + 2;
+        }
+    }
+    
+    let html = '';
+    
+    if (startPage > 1) {
+        html += `<button class="page-number" data-page="1">1</button>`;
+        if (startPage > 2) {
+            html += `<span class="pagination-ellipsis">...</span>`;
+        }
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="page-number ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    }
+    
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            html += `<span class="pagination-ellipsis">...</span>`;
+        }
+        html += `<button class="page-number" data-page="${totalPages}">${totalPages}</button>`;
+    }
+    
+    return html;
+}
+
+// Oldal betöltésekor mutatunk helyszíneket
 document.addEventListener('DOMContentLoaded', () => {
-    displayPlaces(getRandomPlaces(4));
+    displayPlaces(mockPlaces, true);
     
     // Filter tabok inicializálása
     initializeFilterTabs();
@@ -840,7 +1095,7 @@ document.addEventListener('DOMContentLoaded', () => {
             searchInput.value = '';
         }
         
-        displayPlaces(getRandomPlaces(4));
+        displayPlaces(mockPlaces, true);
         
         // Gomb szövegének visszaállítása "Listám"-ra
         if (myListsButtonText) {
@@ -868,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return mockPlaces.find(p => p.name === savedPlace.name && p.address === savedPlace.address) || savedPlace;
         });
         
-        displayPlaces(placesToDisplay);
+        displayPlaces(placesToDisplay, true);
         
         // Gomb szövegének módosítása "Összes"-re
         if (myListsButtonText) {
@@ -919,4 +1174,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
