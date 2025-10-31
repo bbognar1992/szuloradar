@@ -443,25 +443,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Listáim és Ajánlás kezelés
+    // Hamburger menü elemek kezelése
+    const myAccount = document.getElementById('myAccount');
     const myLists = document.getElementById('myLists');
-    const recommendations = document.getElementById('recommendations');
+    const submitRecommendation = document.getElementById('submitRecommendation');
+    const logout = document.getElementById('logout');
+    
+    function closeHamburgerMenu() {
+        const hamburgerMenuDropdown = document.getElementById('hamburgerMenuDropdown');
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        if (hamburgerMenuDropdown && hamburgerButton) {
+            hamburgerMenuDropdown.classList.remove('active');
+            hamburgerButton.classList.remove('active');
+        }
+    }
+    
+    if (myAccount) {
+        myAccount.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Fiókom oldal (még fejlesztés alatt)');
+            closeHamburgerMenu();
+        });
+    }
     
     if (myLists) {
         myLists.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Listáim oldal (még fejlesztés alatt)');
-            hamburgerMenuDropdown.classList.remove('active');
-            hamburgerButton.classList.remove('active');
+            alert('Listám oldal (még fejlesztés alatt)');
+            closeHamburgerMenu();
         });
     }
     
-    if (recommendations) {
-        recommendations.addEventListener('click', (e) => {
+    if (submitRecommendation) {
+        submitRecommendation.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Ajánlások oldal (még fejlesztés alatt)');
-            hamburgerMenuDropdown.classList.remove('active');
-            hamburgerButton.classList.remove('active');
+            alert('Ajánlás beküldése (még fejlesztés alatt)');
+            closeHamburgerMenu();
+        });
+    }
+    
+    if (logout) {
+        logout.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Kijelentkezés: hamburger menü elrejtése, bejelentkezés gomb megjelenítése
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const loginTrigger = document.getElementById('loginTrigger');
+            
+            if (hamburgerMenu && loginTrigger) {
+                hamburgerMenu.style.display = 'none';
+                loginTrigger.style.display = 'block';
+            }
+            
+            closeHamburgerMenu();
+            
+            // Opcionális: localStorage vagy sessionStorage törlés
+            // localStorage.removeItem('user');
+            // sessionStorage.clear();
         });
     }
     

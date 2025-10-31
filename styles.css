@@ -300,6 +300,18 @@ body {
     font-size: 0.95rem;
 }
 
+.hamburger-menu-item-logout {
+    border-top: 1px solid var(--border-color);
+    margin-top: 8px;
+    padding-top: 16px;
+    color: var(--color-secondary) !important;
+}
+
+.hamburger-menu-item-logout:hover {
+    background: rgba(242, 139, 48, 0.1) !important;
+    color: var(--color-secondary-hover) !important;
+}
+
 .profile-info {
     display: flex;
     flex-direction: column;
