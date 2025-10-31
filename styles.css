@@ -515,6 +515,14 @@ body {
     font-size: 1.2rem;
 }
 
+.hamburger-menu-item .menu-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+}
+
 .hamburger-menu-item span:last-child {
     font-size: 0.95rem;
 }
