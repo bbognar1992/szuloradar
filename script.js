@@ -165,5 +165,67 @@ searchInput.addEventListener('input', function(e) {
 // Oldal betöltésekor mutatunk 4 véletlenszerű helyszínt
 document.addEventListener('DOMContentLoaded', () => {
     displayPlaces(getRandomPlaces(4));
+    
+    // Login Modal kezelés
+    const loginModal = document.getElementById('loginModal');
+    const loginTrigger = document.getElementById('loginTrigger');
+    const closeLoginModal = document.getElementById('closeLoginModal');
+    const loginForm = document.getElementById('loginForm');
+    
+    // Modal megnyitása
+    if (loginTrigger) {
+        loginTrigger.addEventListener('click', () => {
+            loginModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Scroll letiltás háttérben
+        });
+    }
+    
+    // Modal bezárása X gombbal
+    if (closeLoginModal) {
+        closeLoginModal.addEventListener('click', () => {
+            loginModal.classList.remove('active');
+            document.body.style.overflow = ''; // Scroll visszaállítás
+        });
+    }
+    
+    // Modal bezárása háttérre kattintva
+    loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            loginModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Modal bezárása Escape billentyűvel
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && loginModal.classList.contains('active')) {
+            loginModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Login form submit kezelés
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Itt lehetne backend API hívás
+            console.log('Bejelentkezés:', { email, password });
+            
+            // Szimulált bejelentkezés - modal bezárása
+            // Valós implementációnál itt ellenőrizni kellene a hitelesítést
+            alert('Bejelentkezési kérés elküldve! (Ez csak egy demo)');
+            
+            // Modal bezárása
+            loginModal.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Opcionálisan: frissítsd a felhasználói interfészt
+            // updateUserProfile(email);
+        });
+    }
 });
 
