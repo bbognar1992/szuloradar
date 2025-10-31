@@ -445,7 +445,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Hamburger menü elemek kezelése
     const myAccount = document.getElementById('myAccount');
-    const myLists = document.getElementById('myLists');
     const submitRecommendation = document.getElementById('submitRecommendation');
     const logout = document.getElementById('logout');
     
@@ -589,14 +588,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Adatok mentve! (Ez csak egy demo)');
             
             closeMyAccountModalFunc();
-        });
-    }
-    
-    if (myLists) {
-        myLists.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Listám oldal (még fejlesztés alatt)');
-            closeHamburgerMenu();
         });
     }
     
