@@ -114,6 +114,7 @@ body {
     height: 72px;
     box-sizing: border-box;
     position: relative;
+    margin-top: 0;
 }
 
 .horizontal-panel .logo-container {
@@ -342,7 +343,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
     gap: 16px;
     position: relative;
