@@ -23,9 +23,29 @@
     <main class="main">
       <header class="main-header">
         <h1>Fedezd fel a gyerekbarát helyeket</h1>
-        <div class="user-profile" id="loginTrigger">
+        <div class="user-profile" id="loginTrigger" style="display: block;">
           <div class="profile-info">
             <span class="profile-name">Bejelentkezés</span>
+          </div>
+        </div>
+        <div class="user-profile hamburger-menu" id="hamburgerMenu" style="display: none;">
+          <button class="hamburger-button" id="hamburgerButton" aria-label="Menü">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <!-- Hamburger Menü -->
+          <div class="hamburger-menu-dropdown" id="hamburgerMenuDropdown">
+        <nav class="hamburger-nav">
+          <a href="#" class="hamburger-menu-item" id="myLists">
+            <span>📋</span>
+            <span>Listáim</span>
+          </a>
+          <a href="#" class="hamburger-menu-item" id="recommendations">
+            <span>⭐</span>
+            <span>Ajánlás</span>
+          </a>
+        </nav>
           </div>
         </div>
       </header>

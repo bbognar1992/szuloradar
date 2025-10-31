@@ -376,27 +376,92 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Login form submit kezelés
+    // Login form submit kezelés - automatikusan elfogadja
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Itt lehetne backend API hívás
-            console.log('Bejelentkezés:', { email, password });
-            
-            // Szimulált bejelentkezés - modal bezárása
-            // Valós implementációnál itt ellenőrizni kellene a hitelesítést
-            alert('Bejelentkezési kérés elküldve! (Ez csak egy demo)');
-            
-            // Modal bezárása
+            // Automatikusan elfogadja a bejelentkezést, nincs validáció
+            // Modal bezárása és scroll visszaállítás
             loginModal.classList.remove('active');
             document.body.style.overflow = '';
             
-            // Opcionálisan: frissítsd a felhasználói interfészt
-            // updateUserProfile(email);
+            // Bejelentkezés gomb elrejtése, hamburger menü megjelenítése
+            const loginTrigger = document.getElementById('loginTrigger');
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            
+            if (loginTrigger && hamburgerMenu) {
+                loginTrigger.style.display = 'none';
+                hamburgerMenu.style.display = 'flex';
+                
+                // Hamburger menü inicializálása ha még nem történt
+                initializeHamburgerMenu();
+            }
+            
+            // Form reset
+            loginForm.reset();
+        });
+    }
+    
+    // Hamburger menü inicializálás függvény
+    function initializeHamburgerMenu() {
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        const hamburgerMenuDropdown = document.getElementById('hamburgerMenuDropdown');
+        
+        if (!hamburgerButton || !hamburgerMenuDropdown) {
+            return;
+        }
+        
+        // Ha már van event listener, ne adjunk hozzá újat
+        if (hamburgerButton.dataset.initialized === 'true') {
+            return;
+        }
+        
+        hamburgerButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            hamburgerMenuDropdown.classList.toggle('active');
+            hamburgerButton.classList.toggle('active');
+        });
+        
+        hamburgerButton.dataset.initialized = 'true';
+    }
+    
+    // Hamburger menü kezelés - inicializálás oldal betöltésekor
+    initializeHamburgerMenu();
+    
+    // Menü bezárása kattintásra a menün kívülre
+    document.addEventListener('click', (e) => {
+        const hamburgerButton = document.getElementById('hamburgerButton');
+        const hamburgerMenuDropdown = document.getElementById('hamburgerMenuDropdown');
+        
+        if (hamburgerButton && hamburgerMenuDropdown) {
+            if (!hamburgerMenuDropdown.contains(e.target) && !hamburgerButton.contains(e.target)) {
+                hamburgerMenuDropdown.classList.remove('active');
+                hamburgerButton.classList.remove('active');
+            }
+        }
+    });
+    
+    // Listáim és Ajánlás kezelés
+    const myLists = document.getElementById('myLists');
+    const recommendations = document.getElementById('recommendations');
+    
+    if (myLists) {
+        myLists.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Listáim oldal (még fejlesztés alatt)');
+            hamburgerMenuDropdown.classList.remove('active');
+            hamburgerButton.classList.remove('active');
+        });
+    }
+    
+    if (recommendations) {
+        recommendations.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Ajánlások oldal (még fejlesztés alatt)');
+            hamburgerMenuDropdown.classList.remove('active');
+            hamburgerButton.classList.remove('active');
         });
     }
     
