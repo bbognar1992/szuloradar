@@ -105,6 +105,97 @@
     </div>
   </div>
 
+  <!-- My Account Modal -->
+  <div class="my-account-modal" id="myAccountModal">
+    <div class="my-account-modal-content">
+      <button class="my-account-modal-close" id="closeMyAccountModal" aria-label="Bezárás">&times;</button>
+      <div class="my-account-header">
+        <h2>Fókom</h2>
+        <p>Felhasználói beállítások és profil adatok kezelése</p>
+      </div>
+      <form class="my-account-form" id="myAccountForm">
+        <!-- Előfizetés módosítása -->
+        <div class="account-section">
+          <h3>Előfizetés módosítása</h3>
+          <div class="form-group">
+            <label class="radio-label">
+              <input type="radio" name="subscription" value="free" checked>
+              <span>Ingyenes</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="subscription" value="premium">
+              <span>Prémium</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="subscription" value="family">
+              <span>Családi csomag</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Profil kép feltöltése -->
+        <div class="account-section">
+          <h3>Profil kép feltöltése</h3>
+          <div class="profile-image-upload">
+            <div class="profile-image-preview" id="profileImagePreview">
+              <img src="https://via.placeholder.com/120" alt="Profil kép" id="profileImage">
+            </div>
+            <label for="profileImageInput" class="upload-button">Kép kiválasztása</label>
+            <input type="file" id="profileImageInput" name="profileImage" accept="image/*" style="display: none;">
+          </div>
+        </div>
+
+        <!-- Személyes adatok -->
+        <div class="account-section">
+          <h3>Személyes adatok</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">Keresztnév</label>
+              <input type="text" id="firstName" name="firstName" placeholder="Keresztneved">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Vezetéknév</label>
+              <input type="text" id="lastName" name="lastName" placeholder="Vezetékneved">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="accountEmail">Email cím</label>
+            <input type="email" id="accountEmail" name="accountEmail" placeholder="email@pelda.hu">
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefonszám</label>
+            <input type="tel" id="phone" name="phone" placeholder="+36 1 234 5678">
+          </div>
+        </div>
+
+        <!-- Család adatok -->
+        <div class="account-section">
+          <h3>Család adatok</h3>
+          <div class="form-group">
+            <label for="parentCount">Hány szülő van a családban?</label>
+            <select id="parentCount" name="parentCount">
+              <option value="1">1 szülő</option>
+              <option value="2" selected>2 szülő</option>
+              <option value="3">3+ szülő</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="childCount">Hány gyerek van a családban?</label>
+            <input type="number" id="childCount" name="childCount" min="0" max="10" value="0" onchange="updateChildrenFields()">
+          </div>
+          <div id="childrenContainer" class="children-container">
+            <!-- Gyerekek mezői dinamikusan töltődnek fel -->
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-button" id="cancelMyAccount">Mégse</button>
+          <button type="submit" class="save-button">Mentés</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Login Modal -->
   <div class="login-modal" id="loginModal">
     <div class="login-modal-content">

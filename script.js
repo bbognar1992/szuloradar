@@ -461,8 +461,134 @@ document.addEventListener('DOMContentLoaded', () => {
     if (myAccount) {
         myAccount.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Fiókom oldal (még fejlesztés alatt)');
+            const myAccountModal = document.getElementById('myAccountModal');
+            if (myAccountModal) {
+                myAccountModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
             closeHamburgerMenu();
+        });
+    }
+    
+    // My Account Modal kezelés
+    const myAccountModal = document.getElementById('myAccountModal');
+    const closeMyAccountModal = document.getElementById('closeMyAccountModal');
+    const cancelMyAccount = document.getElementById('cancelMyAccount');
+    const myAccountForm = document.getElementById('myAccountForm');
+    
+    function closeMyAccountModalFunc() {
+        if (myAccountModal) {
+            myAccountModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+    
+    if (closeMyAccountModal) {
+        closeMyAccountModal.addEventListener('click', closeMyAccountModalFunc);
+    }
+    
+    if (cancelMyAccount) {
+        cancelMyAccount.addEventListener('click', closeMyAccountModalFunc);
+    }
+    
+    // Modal bezárása háttérre kattintva
+    if (myAccountModal) {
+        myAccountModal.addEventListener('click', (e) => {
+            if (e.target === myAccountModal) {
+                closeMyAccountModalFunc();
+            }
+        });
+    }
+    
+    // Modal bezárása Escape billentyűvel
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && myAccountModal && myAccountModal.classList.contains('active')) {
+            closeMyAccountModalFunc();
+        }
+    });
+    
+    // Profil kép feltöltés kezelés
+    const profileImageInput = document.getElementById('profileImageInput');
+    const profileImage = document.getElementById('profileImage');
+    
+    if (profileImageInput && profileImage) {
+        profileImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profileImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Gyerekek mezőinek frissítése
+    window.updateChildrenFields = function() {
+        const childCount = parseInt(document.getElementById('childCount').value) || 0;
+        const container = document.getElementById('childrenContainer');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        for (let i = 1; i <= childCount; i++) {
+            const childDiv = document.createElement('div');
+            childDiv.className = 'child-field-group';
+            childDiv.innerHTML = `
+                <h4>${i}. gyerek</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="childName${i}">Név</label>
+                        <input type="text" id="childName${i}" name="childName${i}" placeholder="Gyerek neve">
+                    </div>
+                    <div class="form-group">
+                        <label for="childBirthYear${i}">Születési év</label>
+                        <input type="number" id="childBirthYear${i}" name="childBirthYear${i}" 
+                               min="2000" max="${new Date().getFullYear()}" 
+                               placeholder="${new Date().getFullYear()}" 
+                               value="${new Date().getFullYear()}">
+                    </div>
+                </div>
+            `;
+            container.appendChild(childDiv);
+        }
+    };
+    
+    // Form submit kezelés
+    if (myAccountForm) {
+        myAccountForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                subscription: document.querySelector('input[name="subscription"]:checked')?.value,
+                firstName: document.getElementById('firstName')?.value,
+                lastName: document.getElementById('lastName')?.value,
+                email: document.getElementById('accountEmail')?.value,
+                phone: document.getElementById('phone')?.value,
+                parentCount: document.getElementById('parentCount')?.value,
+                childCount: document.getElementById('childCount')?.value,
+                children: []
+            };
+            
+            // Gyerekek adatainak összegyűjtése
+            const childCount = parseInt(formData.childCount) || 0;
+            for (let i = 1; i <= childCount; i++) {
+                const name = document.getElementById(`childName${i}`)?.value;
+                const birthYear = document.getElementById(`childBirthYear${i}`)?.value;
+                if (name || birthYear) {
+                    formData.children.push({
+                        name: name,
+                        birthYear: birthYear
+                    });
+                }
+            }
+            
+            console.log('Fiók adatok mentve:', formData);
+            alert('Adatok mentve! (Ez csak egy demo)');
+            
+            closeMyAccountModalFunc();
         });
     }
     
