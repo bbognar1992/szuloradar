@@ -137,13 +137,78 @@ body {
     min-width: 0;
 }
 
-.main h1 {
-    margin-top: 0;
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.main h1 {
+    margin: 0;
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: -0.5px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.user-profile:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.profile-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-primary);
+    background: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.user-profile:hover .profile-avatar {
+    border-color: var(--color-primary-hover);
+    transform: scale(1.05);
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 #searchInput {
@@ -309,8 +374,18 @@ body {
         position: static;
     }
     
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
     .main h1 {
         font-size: 2rem;
+        margin-bottom: 16px;
+    }
+    
+    .user-profile {
+        align-self: flex-end;
     }
     
     .place-list {
