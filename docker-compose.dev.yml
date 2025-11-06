@@ -8,7 +8,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-szuloradar}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./frontend/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
@@ -26,6 +25,9 @@ services:
     container_name: szuloradar_backend
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-szuloradar}:${POSTGRES_PASSWORD:-szuloradar_password}@db:5432/${POSTGRES_DB:-szuloradar}}
+      POSTGRES_USER: ${POSTGRES_USER:-szuloradar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-szuloradar_password}
+      POSTGRES_DB: ${POSTGRES_DB:-szuloradar}
       SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
       ALGORITHM: ${ALGORITHM:-HS256}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}

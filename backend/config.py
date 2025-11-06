@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from typing import List
+from pathlib import Path
 
 
 class Settings(BaseSettings):
@@ -16,7 +17,8 @@ class Settings(BaseSettings):
     cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8000"]
     
     class Config:
-        env_file = ".env"
+        # Load .env from project root (one level up from backend/)
+        env_file = str(Path(__file__).parent.parent / ".env")
         case_sensitive = False
 
 

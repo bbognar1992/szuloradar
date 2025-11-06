@@ -27,7 +27,11 @@ class User(Base):
     children = relationship("Children", back_populates="user", cascade="all, delete-orphan")
     saved_places = relationship("SavedPlace", back_populates="user", cascade="all, delete-orphan")
     place_ratings = relationship("PlaceRating", back_populates="user", cascade="all, delete-orphan")
-    recommendations = relationship("Recommendation", back_populates="user")
+    recommendations = relationship(
+        "Recommendation", 
+        primaryjoin="User.id == Recommendation.user_id",
+        back_populates="user"
+    )
     
     __table_args__ = (
         CheckConstraint("subscription_type IN ('free', 'premium', 'family')", name="check_subscription_type"),

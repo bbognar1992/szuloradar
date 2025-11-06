@@ -1,13 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import settings
-from database import engine, Base
 from routers import auth, users, places, interactions, recommendations
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
 # Create FastAPI app
+# Note: Database tables are created via Alembic migrations (run in start.sh)
 app = FastAPI(
     title="SzülőRadar API",
     description="API for kid-friendly places discovery application",
