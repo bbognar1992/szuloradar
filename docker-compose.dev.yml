@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: szuloradar_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-szuloradar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-szuloradar_password}
+      POSTGRES_DB: ${POSTGRES_DB:-szuloradar}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-szuloradar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - szuloradar_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: szuloradar_backend
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-szuloradar}:${POSTGRES_PASSWORD:-szuloradar_password}@db:5432/${POSTGRES_DB:-szuloradar}}
+      POSTGRES_USER: ${POSTGRES_USER:-szuloradar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-szuloradar_password}
+      POSTGRES_DB: ${POSTGRES_DB:-szuloradar}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ALGORITHM: ${ALGORITHM:-HS256}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      DEBUG: ${DEBUG:-True}
+      CORS_ORIGINS: ${CORS_ORIGINS:-["http://localhost:3000", "http://localhost:8000", "http://127.0.0.1:3000"]}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - szuloradar_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  szuloradar_network:
+    driver: bridge
+
