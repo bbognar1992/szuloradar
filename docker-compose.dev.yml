@@ -45,6 +45,21 @@ services:
       - szuloradar_network
     restart: unless-stopped
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: szuloradar_frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    networks:
+      - szuloradar_network
+    restart: unless-stopped
+
 volumes:
   postgres_data:
 
