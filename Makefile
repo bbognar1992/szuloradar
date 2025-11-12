@@ -38,7 +38,7 @@ dev-logs: ## View development logs
 	docker compose -f docker-compose.dev.yml logs -f backend
 
 dev-down: ## Stop development services
-	docker compose -f docker-compose.dev.yml down
+	docker compose -f docker-compose.dev.yml down -v
 
 shell: ## Open a shell in the backend container
 	docker compose -f docker-compose.dev.yml exec backend /bin/bash
