@@ -9,6 +9,8 @@ A kid-friendly places discovery application that helps parents find and share re
 - Docker and Docker Compose installed
 - Make (optional, but recommended for easier commands)
 
+> **Note:** If you're using Docker Compose V1 (older versions, common on Ubuntu), use the `-old` variants of commands (e.g., `make dev-old` instead of `make dev`). The regular commands work with Docker Compose V2.
+
 ### Getting Started
 
 1. **Set up environment variables** (see [ENV_SETUP.md](ENV_SETUP.md) for details):
@@ -17,8 +19,15 @@ A kid-friendly places discovery application that helps parents find and share re
    ```
 
 2. **Start the development environment**:
+   
+   For Docker Compose V2 (default):
    ```bash
    make dev
+   ```
+   
+   For Docker Compose V1 (older systems like Ubuntu):
+   ```bash
+   make dev-old
    ```
 
 3. **Access the application**:
@@ -27,20 +36,40 @@ A kid-friendly places discovery application that helps parents find and share re
    - Frontend: Open `frontend/index.html` in your browser
 
 4. **Stop the development environment**:
+   
+   For Docker Compose V2:
    ```bash
    make dev-down
+   ```
+   
+   For Docker Compose V1:
+   ```bash
+   make dev-down-old
    ```
 
 ## 📋 Available Commands
 
-Run `make help` to see all available commands, or use:
+Run `make help` to see all available commands.
 
+### Common Development Commands
+
+**Docker Compose V2 (default):**
 - `make dev` - Start development services with hot reload
 - `make dev-down` - Stop development services and remove volumes
 - `make dev-logs` - View backend logs
 - `make shell` - Open a shell in the backend container
 - `make db-shell` - Open PostgreSQL shell
 - `make test` - Run tests
+
+**Docker Compose V1 (older systems):**
+- `make dev-old` - Start development services with hot reload
+- `make dev-down-old` - Stop development services and remove volumes
+- `make dev-logs-old` - View backend logs
+- `make shell-old` - Open a shell in the backend container
+- `make db-shell-old` - Open PostgreSQL shell
+- `make test-old` - Run tests
+
+All commands have `-old` variants for compatibility with Docker Compose V1. Use them if you encounter errors with the regular commands.
 
 ## 📚 Documentation
 
