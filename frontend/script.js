@@ -1,3 +1,36 @@
+// Toast Notification System
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    const icon = type === 'success' ? 
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' :
+        type === 'error' ?
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>' :
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    
+    toast.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] max-w-md animate-slide-in-right`;
+    toast.innerHTML = `
+        <div class="flex-shrink-0">${icon}</div>
+        <div class="flex-1 font-medium">${message}</div>
+        <button class="flex-shrink-0 hover:opacity-75 transition-opacity" onclick="this.parentElement.remove()">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // Mentett helyek kezelése (localStorage)
 function getSavedPlaces() {
     const saved = localStorage.getItem('savedPlaces');
@@ -309,7 +342,7 @@ function getRandomPlaces(count = 4) {
 // Helyszín kártya generálása
 function createPlaceCard(place) {
     const card = document.createElement('div');
-    card.className = 'place-card';
+    card.className = 'place-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden group hover:-translate-y-1';
     card.setAttribute('data-place-id', mockPlaces.indexOf(place));
     
     const typeLabels = {
@@ -320,11 +353,78 @@ function createPlaceCard(place) {
         'szállás': '🏨 Szállás'
     };
     
+    const typeColors = {
+        'kávézó': 'bg-amber-100 text-amber-800',
+        'játszóház': 'bg-purple-100 text-purple-800',
+        'étterem': 'bg-orange-100 text-orange-800',
+        'konditerem': 'bg-blue-100 text-blue-800',
+        'szállás': 'bg-green-100 text-green-800'
+    };
+    
+    // Generate star rating
+    const fullStars = Math.floor(place.rating);
+    const hasHalfStar = place.rating % 1 >= 0.5;
+    let starsHTML = '';
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<span class="text-yellow-400 text-lg">⭐</span>';
+    }
+    if (hasHalfStar && fullStars < 5) {
+        starsHTML += '<span class="text-yellow-400 text-lg">⭐</span>';
+    }
+    for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
+        starsHTML += '<span class="text-gray-300 text-lg">⭐</span>';
+    }
+    
     card.innerHTML = `
-        <h3>${place.name}</h3>
-        <p><strong>Típus:</strong> ${typeLabels[place.type] || place.type}</p>
-        <p><strong>Cím:</strong> ${place.address}</p>
-        <p class="rating">Értékelés: ${place.rating}</p>
+        <div class="p-6">
+            <div class="flex items-start justify-between mb-3">
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors duration-300 line-clamp-2 flex-1 pr-2">
+                    ${place.name}
+                </h3>
+                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold ${typeColors[place.type] || 'bg-gray-100 text-gray-800'} whitespace-nowrap flex-shrink-0">
+                    ${typeLabels[place.type] || place.type}
+                </span>
+            </div>
+            
+            <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center gap-1">
+                    ${starsHTML}
+                </div>
+                <span class="text-lg font-semibold text-gray-900">${place.rating}</span>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="flex items-start gap-2">
+                    <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <p class="text-sm text-gray-600 line-clamp-2">${place.address}</p>
+                </div>
+                
+                ${place.amenities && place.amenities.length > 0 ? `
+                <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
+                    ${place.amenities.slice(0, 3).map(amenity => `
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
+                            ${amenity}
+                        </span>
+                    `).join('')}
+                    ${place.amenities.length > 3 ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium text-gray-500">
+                        +${place.amenities.length - 3} több
+                    </span>` : ''}
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">Részletek megtekintése</span>
+                    <svg class="w-5 h-5 text-teal-500 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
     `;
     
     // Kattintás esemény hozzáadása
@@ -426,7 +526,7 @@ window.addToList = function(name, address, type, rating) {
     };
     
     if (savePlace(place)) {
-        alert('Hely hozzáadva a listához!');
+        showToast('Hely hozzáadva a listához!', 'success');
         const savedPlace = mockPlaces.find(p => p.name === name && p.address === address) || place;
         showPlaceDetail(savedPlace);
         
@@ -478,9 +578,29 @@ function displayPlaces(places, resetPage = false) {
     if (places.length === 0) {
         container.innerHTML = '';
         if (isShowingSavedPlaces) {
-            container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">🔖 Még nincsenek mentett helyek a listádon.<br>Helyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket.</p>';
+            container.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-16 px-4">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Még nincsenek mentett helyek</h3>
+                    <p class="text-gray-600 text-center max-w-md">Helyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket a kedvenceidhez.</p>
+                </div>
+            `;
         } else {
-            container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">Nincs találat</p>';
+            container.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-16 px-4">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Nincs találat</h3>
+                    <p class="text-gray-600 text-center max-w-md">Próbáld meg más keresési feltételekkel vagy szűrőkkel.</p>
+                </div>
+            `;
         }
         // Pagináció elrejtése
         const pagination = document.getElementById('pagination');
@@ -496,10 +616,13 @@ function displayPlaces(places, resetPage = false) {
     const endIndex = startIndex + itemsPerPage;
     const paginatedPlaces = places.slice(startIndex, endIndex);
     
-    // Kártyák megjelenítése
+    // Kártyák megjelenítése animációval
     container.innerHTML = '';
-    paginatedPlaces.forEach(place => {
+    paginatedPlaces.forEach((place, index) => {
         const card = createPlaceCard(place);
+        // Fade-in animáció hozzáadása
+        card.classList.add('opacity-0', 'animate-fade-in');
+        card.style.animationDelay = `${index * 50}ms`;
         container.appendChild(card);
     });
     
@@ -525,10 +648,21 @@ function initializeFilterTabs() {
     
     filterTabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            // Összes tab active osztály eltávolítása
-            filterTabs.forEach(t => t.classList.remove('active'));
-            // Aktuális tab active osztály hozzáadása
+            // Összes tab active osztály és Tailwind stílusok eltávolítása
+            filterTabs.forEach(t => {
+                t.classList.remove('active');
+                // Tailwind active stílusok eltávolítása
+                t.classList.remove('bg-white', 'text-teal-600', 'shadow-sm');
+                if (!t.classList.contains('text-gray-600')) {
+                    t.classList.add('text-gray-600');
+                }
+            });
+            
+            // Aktuális tab active osztály és Tailwind stílusok hozzáadása
             tab.classList.add('active');
+            tab.classList.remove('text-gray-600');
+            tab.classList.add('bg-white', 'text-teal-600', 'shadow-sm');
+            
             // Aktív filter frissítése
             activeFilter = tab.dataset.filter;
             
@@ -580,7 +714,7 @@ function renderPagination(totalPages, totalItems) {
     if (!pagination) {
         pagination = document.createElement('div');
         pagination.id = 'pagination';
-        pagination.className = 'pagination';
+        pagination.className = 'flex flex-col md:flex-row justify-between items-center gap-4 pt-8 mt-8 border-t border-gray-200';
         const main = document.querySelector('.main');
         if (main) {
             main.appendChild(pagination);
@@ -598,17 +732,23 @@ function renderPagination(totalPages, totalItems) {
     const endItem = Math.min(currentPage * itemsPerPage, totalItems);
     
     pagination.innerHTML = `
-        <div class="pagination-info">
+        <div class="text-sm text-gray-600">
             <span>${startItem}-${endItem} / ${totalItems} találat</span>
         </div>
-        <div class="pagination-controls">
-            <button class="pagination-btn" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>
+        <div class="flex items-center gap-2 flex-wrap justify-center">
+            <button 
+                class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700" 
+                id="prevPage" 
+                ${currentPage === 1 ? 'disabled' : ''}>
                 ← Előző
             </button>
-            <div class="pagination-numbers">
+            <div class="flex items-center gap-1">
                 ${generatePaginationNumbers(totalPages)}
             </div>
-            <button class="pagination-btn" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>
+            <button 
+                class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700" 
+                id="nextPage" 
+                ${currentPage === totalPages ? 'disabled' : ''}>
                 Következő →
             </button>
         </div>
@@ -694,21 +834,25 @@ function generatePaginationNumbers(totalPages) {
     let html = '';
     
     if (startPage > 1) {
-        html += `<button class="page-number" data-page="1">1</button>`;
+        html += `<button class="min-w-[36px] h-9 px-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200" data-page="1">1</button>`;
         if (startPage > 2) {
-            html += `<span class="pagination-ellipsis">...</span>`;
+            html += `<span class="px-2 text-gray-400 text-sm">...</span>`;
         }
     }
     
     for (let i = startPage; i <= endPage; i++) {
-        html += `<button class="page-number ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        if (i === currentPage) {
+            html += `<button class="min-w-[36px] h-9 px-3 bg-teal-500 border border-teal-500 rounded-lg text-sm font-semibold text-white shadow-sm" data-page="${i}">${i}</button>`;
+        } else {
+            html += `<button class="min-w-[36px] h-9 px-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200" data-page="${i}">${i}</button>`;
+        }
     }
     
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
-            html += `<span class="pagination-ellipsis">...</span>`;
+            html += `<span class="px-2 text-gray-400 text-sm">...</span>`;
         }
-        html += `<button class="page-number" data-page="${totalPages}">${totalPages}</button>`;
+        html += `<button class="min-w-[36px] h-9 px-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200" data-page="${totalPages}">${totalPages}</button>`;
     }
     
     return html;

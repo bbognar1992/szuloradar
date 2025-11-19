@@ -4,6 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Szülő Radar - Fedezd fel a gyerekbarát helyeket</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out forwards',
+            'slide-in-right': 'slideInRight 0.3s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideInRight: {
+              '0%': { opacity: '0', transform: 'translateX(100%)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="styles.css">
   <meta name="description" content="Fedezd fel a gyerekbarát helyeket városodban - kávézók, játszóházak, éttermek">
 </head>
@@ -50,32 +73,49 @@
       </div>
     </header>
 
-    <div class="horizontal-panel">
-      <div class="logo-container">
-        <img src="assets/logo2.png" alt="SzülőRadar" class="logo" id="logo">
-      </div>
+    <div class="w-full max-w-7xl mx-auto mb-8 px-4">
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col lg:flex-row items-center gap-6">
+        <!-- Logo Section -->
+        <div class="flex-shrink-0 pr-6 border-r border-gray-200 hidden lg:block">
+          <img src="assets/logo2.png" alt="SzülőRadar" class="h-12 w-auto object-contain" id="logo">
+        </div>
 
-      <div class="search-box" id="searchBox">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Keresés hely név alapján..." aria-label="Keresés" class="search-input-hidden">
-      </div>
+        <!-- Search Box -->
+        <div class="flex-1 w-full lg:w-auto lg:max-w-sm relative group" id="searchBox">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-gray-400 group-focus-within:text-teal-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Keresés hely név alapján..." 
+            aria-label="Keresés" 
+            class="search-input-hidden w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:bg-white transition-all duration-200 text-sm">
+        </div>
 
-      <div class="filters-tabs">
-        <button type="button" class="filter-tab active" data-filter="all">Összes</button>
-        <button type="button" class="filter-tab" data-filter="kávézó">Kávézó</button>
-        <button type="button" class="filter-tab" data-filter="étterem">Étterem</button>
-        <button type="button" class="filter-tab" data-filter="konditerem">Edzőterem</button>
-        <button type="button" class="filter-tab" data-filter="szállás">Szállás</button>
+        <!-- Filter Tabs -->
+        <div class="filters-tabs flex items-center gap-2 bg-gray-50 p-1.5 rounded-xl border border-gray-200 flex-wrap justify-center lg:justify-start" id="filtersContainer">
+          <button type="button" class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap bg-white text-teal-600 shadow-sm" data-filter="all">Összes</button>
+          <button type="button" class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap text-gray-600 hover:text-gray-900 hover:bg-gray-100" data-filter="kávézó">☕ Kávézó</button>
+          <button type="button" class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap text-gray-600 hover:text-gray-900 hover:bg-gray-100" data-filter="étterem">🍽️ Étterem</button>
+          <button type="button" class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap text-gray-600 hover:text-gray-900 hover:bg-gray-100" data-filter="konditerem">💪 Edzőterem</button>
+          <button type="button" class="filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap text-gray-600 hover:text-gray-900 hover:bg-gray-100" data-filter="szállás">🏨 Szállás</button>
+        </div>
       </div>
     </div>
 
     <main class="main">
 
-      <div id="placesContainer" class="place-list">
+      <div id="placesContainer" class="place-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <!-- JS tölti fel -->
       </div>
     </main>
   </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
   <footer class="footer">
     <div class="footer-content">
