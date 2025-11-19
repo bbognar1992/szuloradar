@@ -5,6 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Szülő Radar - Fedezd fel a gyerekbarát helyeket</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out forwards',
+            'slide-in-right': 'slideInRight 0.3s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideInRight: {
+              '0%': { opacity: '0', transform: 'translateX(100%)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="styles.css">
   <meta name="description" content="Fedezd fel a gyerekbarát helyeket városodban - kávézók, játszóházak, éttermek">
 </head>
@@ -91,6 +113,9 @@
       </div>
     </main>
   </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
   <footer class="footer">
     <div class="footer-content">

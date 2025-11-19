@@ -1,3 +1,36 @@
+// Toast Notification System
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    const icon = type === 'success' ? 
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' :
+        type === 'error' ?
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>' :
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    
+    toast.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] max-w-md animate-slide-in-right`;
+    toast.innerHTML = `
+        <div class="flex-shrink-0">${icon}</div>
+        <div class="flex-1 font-medium">${message}</div>
+        <button class="flex-shrink-0 hover:opacity-75 transition-opacity" onclick="this.parentElement.remove()">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // Mentett helyek kezelése (localStorage)
 function getSavedPlaces() {
     const saved = localStorage.getItem('savedPlaces');
@@ -493,7 +526,7 @@ window.addToList = function(name, address, type, rating) {
     };
     
     if (savePlace(place)) {
-        alert('Hely hozzáadva a listához!');
+        showToast('Hely hozzáadva a listához!', 'success');
         const savedPlace = mockPlaces.find(p => p.name === name && p.address === address) || place;
         showPlaceDetail(savedPlace);
         
@@ -545,9 +578,29 @@ function displayPlaces(places, resetPage = false) {
     if (places.length === 0) {
         container.innerHTML = '';
         if (isShowingSavedPlaces) {
-            container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">🔖 Még nincsenek mentett helyek a listádon.<br>Helyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket.</p>';
+            container.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-16 px-4">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Még nincsenek mentett helyek</h3>
+                    <p class="text-gray-600 text-center max-w-md">Helyszínek részleteit megnyitva a "Listához adás" gombbal hozzáadhatsz helyeket a kedvenceidhez.</p>
+                </div>
+            `;
         } else {
-            container.innerHTML = '<p style="color: var(--text-secondary); padding: 20px; text-align: center;">Nincs találat</p>';
+            container.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-16 px-4">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Nincs találat</h3>
+                    <p class="text-gray-600 text-center max-w-md">Próbáld meg más keresési feltételekkel vagy szűrőkkel.</p>
+                </div>
+            `;
         }
         // Pagináció elrejtése
         const pagination = document.getElementById('pagination');
@@ -563,10 +616,13 @@ function displayPlaces(places, resetPage = false) {
     const endIndex = startIndex + itemsPerPage;
     const paginatedPlaces = places.slice(startIndex, endIndex);
     
-    // Kártyák megjelenítése
+    // Kártyák megjelenítése animációval
     container.innerHTML = '';
-    paginatedPlaces.forEach(place => {
+    paginatedPlaces.forEach((place, index) => {
         const card = createPlaceCard(place);
+        // Fade-in animáció hozzáadása
+        card.classList.add('opacity-0', 'animate-fade-in');
+        card.style.animationDelay = `${index * 50}ms`;
         container.appendChild(card);
     });
     
