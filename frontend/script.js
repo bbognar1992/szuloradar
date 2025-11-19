@@ -309,7 +309,7 @@ function getRandomPlaces(count = 4) {
 // Helyszín kártya generálása
 function createPlaceCard(place) {
     const card = document.createElement('div');
-    card.className = 'place-card';
+    card.className = 'place-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden group hover:-translate-y-1';
     card.setAttribute('data-place-id', mockPlaces.indexOf(place));
     
     const typeLabels = {
@@ -320,11 +320,78 @@ function createPlaceCard(place) {
         'szállás': '🏨 Szállás'
     };
     
+    const typeColors = {
+        'kávézó': 'bg-amber-100 text-amber-800',
+        'játszóház': 'bg-purple-100 text-purple-800',
+        'étterem': 'bg-orange-100 text-orange-800',
+        'konditerem': 'bg-blue-100 text-blue-800',
+        'szállás': 'bg-green-100 text-green-800'
+    };
+    
+    // Generate star rating
+    const fullStars = Math.floor(place.rating);
+    const hasHalfStar = place.rating % 1 >= 0.5;
+    let starsHTML = '';
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<span class="text-yellow-400 text-lg">⭐</span>';
+    }
+    if (hasHalfStar && fullStars < 5) {
+        starsHTML += '<span class="text-yellow-400 text-lg">⭐</span>';
+    }
+    for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
+        starsHTML += '<span class="text-gray-300 text-lg">⭐</span>';
+    }
+    
     card.innerHTML = `
-        <h3>${place.name}</h3>
-        <p><strong>Típus:</strong> ${typeLabels[place.type] || place.type}</p>
-        <p><strong>Cím:</strong> ${place.address}</p>
-        <p class="rating">Értékelés: ${place.rating}</p>
+        <div class="p-6">
+            <div class="flex items-start justify-between mb-3">
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors duration-300 line-clamp-2 flex-1 pr-2">
+                    ${place.name}
+                </h3>
+                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold ${typeColors[place.type] || 'bg-gray-100 text-gray-800'} whitespace-nowrap flex-shrink-0">
+                    ${typeLabels[place.type] || place.type}
+                </span>
+            </div>
+            
+            <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center gap-1">
+                    ${starsHTML}
+                </div>
+                <span class="text-lg font-semibold text-gray-900">${place.rating}</span>
+            </div>
+            
+            <div class="space-y-2">
+                <div class="flex items-start gap-2">
+                    <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <p class="text-sm text-gray-600 line-clamp-2">${place.address}</p>
+                </div>
+                
+                ${place.amenities && place.amenities.length > 0 ? `
+                <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
+                    ${place.amenities.slice(0, 3).map(amenity => `
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
+                            ${amenity}
+                        </span>
+                    `).join('')}
+                    ${place.amenities.length > 3 ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium text-gray-500">
+                        +${place.amenities.length - 3} több
+                    </span>` : ''}
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">Részletek megtekintése</span>
+                    <svg class="w-5 h-5 text-teal-500 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
     `;
     
     // Kattintás esemény hozzáadása
