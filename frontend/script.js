@@ -592,10 +592,21 @@ function initializeFilterTabs() {
     
     filterTabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            // Összes tab active osztály eltávolítása
-            filterTabs.forEach(t => t.classList.remove('active'));
-            // Aktuális tab active osztály hozzáadása
+            // Összes tab active osztály és Tailwind stílusok eltávolítása
+            filterTabs.forEach(t => {
+                t.classList.remove('active');
+                // Tailwind active stílusok eltávolítása
+                t.classList.remove('bg-white', 'text-teal-600', 'shadow-sm');
+                if (!t.classList.contains('text-gray-600')) {
+                    t.classList.add('text-gray-600');
+                }
+            });
+            
+            // Aktuális tab active osztály és Tailwind stílusok hozzáadása
             tab.classList.add('active');
+            tab.classList.remove('text-gray-600');
+            tab.classList.add('bg-white', 'text-teal-600', 'shadow-sm');
+            
             // Aktív filter frissítése
             activeFilter = tab.dataset.filter;
             
