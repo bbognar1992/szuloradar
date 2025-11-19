@@ -658,7 +658,7 @@ function renderPagination(totalPages, totalItems) {
     if (!pagination) {
         pagination = document.createElement('div');
         pagination.id = 'pagination';
-        pagination.className = 'pagination';
+        pagination.className = 'flex flex-col md:flex-row justify-between items-center gap-4 pt-8 mt-8 border-t border-gray-200';
         const main = document.querySelector('.main');
         if (main) {
             main.appendChild(pagination);
@@ -676,17 +676,23 @@ function renderPagination(totalPages, totalItems) {
     const endItem = Math.min(currentPage * itemsPerPage, totalItems);
     
     pagination.innerHTML = `
-        <div class="pagination-info">
+        <div class="text-sm text-gray-600">
             <span>${startItem}-${endItem} / ${totalItems} találat</span>
         </div>
-        <div class="pagination-controls">
-            <button class="pagination-btn" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>
+        <div class="flex items-center gap-2 flex-wrap justify-center">
+            <button 
+                class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700" 
+                id="prevPage" 
+                ${currentPage === 1 ? 'disabled' : ''}>
                 ← Előző
             </button>
-            <div class="pagination-numbers">
+            <div class="flex items-center gap-1">
                 ${generatePaginationNumbers(totalPages)}
             </div>
-            <button class="pagination-btn" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>
+            <button 
+                class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 disabled:hover:text-gray-700" 
+                id="nextPage" 
+                ${currentPage === totalPages ? 'disabled' : ''}>
                 Következő →
             </button>
         </div>
@@ -772,21 +778,25 @@ function generatePaginationNumbers(totalPages) {
     let html = '';
     
     if (startPage > 1) {
-        html += `<button class="page-number" data-page="1">1</button>`;
+        html += `<button class="min-w-[36px] h-9 px-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200" data-page="1">1</button>`;
         if (startPage > 2) {
-            html += `<span class="pagination-ellipsis">...</span>`;
+            html += `<span class="px-2 text-gray-400 text-sm">...</span>`;
         }
     }
     
     for (let i = startPage; i <= endPage; i++) {
-        html += `<button class="page-number ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        if (i === currentPage) {
+            html += `<button class="min-w-[36px] h-9 px-3 bg-teal-500 border border-teal-500 rounded-lg text-sm font-semibold text-white shadow-sm" data-page="${i}">${i}</button>`;
+        } else {
+            html += `<button class="min-w-[36px] h-9 px-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200" data-page="${i}">${i}</button>`;
+        }
     }
     
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
-            html += `<span class="pagination-ellipsis">...</span>`;
+            html += `<span class="px-2 text-gray-400 text-sm">...</span>`;
         }
-        html += `<button class="page-number" data-page="${totalPages}">${totalPages}</button>`;
+        html += `<button class="min-w-[36px] h-9 px-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-teal-500 hover:text-teal-600 transition-all duration-200" data-page="${totalPages}">${totalPages}</button>`;
     }
     
     return html;
