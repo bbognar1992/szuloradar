@@ -418,89 +418,197 @@
   </div>
 
   <!-- Submit Recommendation Modal -->
-  <div class="submit-recommendation-modal" id="submitRecommendationModal">
-    <div class="submit-recommendation-modal-content">
-      <button class="submit-recommendation-modal-close" id="closeSubmitRecommendationModal" aria-label="Bezárás">&times;</button>
-      <div class="submit-recommendation-header">
-        <h2>Ajánlás beküldése</h2>
-        <p>Oszd meg kedvenc gyerekbarát helyedet más szülőkkel</p>
-      </div>
-      <form class="submit-recommendation-form" id="submitRecommendationForm">
-        <div class="form-group">
-          <label for="placeName">Hely neve <span class="required">*</span></label>
-          <input type="text" id="placeName" name="placeName" placeholder="pl. Családi Kávézó" required>
-        </div>
-        <div class="form-group">
-          <label for="placeType">Ajánlás típusa <span class="required">*</span></label>
-          <select id="placeType" name="placeType" required>
-            <option value="">-- Válassz típust --</option>
-            <option value="kávézó">☕ Kávézó</option>
-            <option value="étterem">🍽️ Étterem</option>
-            <option value="játszóház">🎪 Játszóház</option>
-            <option value="konditerem">💪 Edzőterem</option>
-            <option value="szállás">🏨 Szállás</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="recommendationText">Ajánlás szövege <span class="required">*</span></label>
-          <textarea id="recommendationText" name="recommendationText" rows="5" placeholder="Írd le, miért ajánlod ezt a helyet más szülőknek..." required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="mapsLink">Maps link</label>
-          <input type="url" id="mapsLink" name="mapsLink" placeholder="https://maps.google.com/... (Opcionális)">
-          <small class="form-hint">Opcionális: másold be ide a Google Maps linkjét</small>
-        </div>
-        <div class="form-group">
-          <label>Mi található meg a helyen? <span class="required">*</span></label>
-          <div class="checklist-container">
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="babasarok">
-              <span>👶 Babasarok</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="gyerek_gondozo">
-              <span>🛡️ Gyerek gondozó</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="jatszo_sarok">
-              <span>🎮 Játszó sarok</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="pelenkazo">
-              <span>🧴 Pelenkázó</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="magas_szek">
-              <span>🪑 Magas szék</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="parkolas">
-              <span>🅿️ Parkolás</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="kert">
-              <span>🌳 Kert</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="gyerek_menu">
-              <span>🍽️ Gyerekmenü</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="babakocsi_barat">
-              <span>👶 Babakocsi-barát</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="amenities" value="wifi">
-              <span>📶 Ingyenes WiFi</span>
-            </label>
+  <div id="submitRecommendationModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200" id="submitRecommendationBackdrop"></div>
+    
+    <!-- Modal Container - Centered -->
+    <div class="fixed inset-0 flex items-center justify-center p-4 pointer-events-none">
+      <div class="relative w-full max-w-2xl bg-[#FFFBF7] rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-200 pointer-events-auto max-h-[90vh] flex flex-col" id="submitRecommendationContent">
+        <!-- Close Button -->
+        <button 
+          id="closeSubmitRecommendationModal" 
+          aria-label="Bezárás"
+          class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 hover:bg-white text-gray-600 hover:text-gray-900 transition-all duration-200 hover:rotate-90 hover:scale-110 shadow-md hover:shadow-lg"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- Header -->
+        <div class="bg-gradient-to-br from-teal-50 to-orange-50 px-8 pt-10 pb-6 border-b border-[#E8DDD0]">
+          <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-teal-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
           </div>
-          <small class="form-hint">Válassz legalább egy opciót</small>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2 text-center">Ajánlás beküldése</h2>
+          <p class="text-gray-600 text-sm text-center">Oszd meg kedvenc gyerekbarát helyedet más szülőkkel</p>
         </div>
-        <div class="form-actions">
-          <button type="button" class="cancel-button" id="cancelSubmitRecommendation">Mégse</button>
-          <button type="submit" class="submit-recommendation-button">Ajánlás beküldése</button>
-        </div>
-      </form>
+
+        <!-- Form - Scrollable -->
+        <form id="submitRecommendationForm" class="px-8 py-6 overflow-y-auto flex-1">
+          <div class="space-y-6">
+            <!-- Place Name -->
+            <div>
+              <label for="placeName" class="block text-sm font-semibold text-gray-700 mb-2">
+                Hely neve <span class="text-orange-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                </div>
+                <input 
+                  type="text" 
+                  id="placeName" 
+                  name="placeName" 
+                  placeholder="pl. Családi Kávézó" 
+                  required
+                  class="w-full pl-12 pr-4 py-3.5 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                >
+              </div>
+            </div>
+
+            <!-- Place Type -->
+            <div>
+              <label for="placeType" class="block text-sm font-semibold text-gray-700 mb-2">
+                Ajánlás típusa <span class="text-orange-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
+                <select 
+                  id="placeType" 
+                  name="placeType" 
+                  required
+                  class="w-full pl-4 pr-12 py-3.5 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 appearance-none cursor-pointer"
+                >
+                  <option value="">-- Válassz típust --</option>
+                  <option value="kávézó">☕ Kávézó</option>
+                  <option value="étterem">🍽️ Étterem</option>
+                  <option value="játszóház">🎪 Játszóház</option>
+                  <option value="konditerem">💪 Edzőterem</option>
+                  <option value="szállás">🏨 Szállás</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Recommendation Text -->
+            <div>
+              <label for="recommendationText" class="block text-sm font-semibold text-gray-700 mb-2">
+                Ajánlás szövege <span class="text-orange-500">*</span>
+              </label>
+              <textarea 
+                id="recommendationText" 
+                name="recommendationText" 
+                rows="5" 
+                placeholder="Írd le, miért ajánlod ezt a helyet más szülőknek..." 
+                required
+                class="w-full px-4 py-3.5 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 resize-none"
+              ></textarea>
+            </div>
+
+            <!-- Maps Link -->
+            <div>
+              <label for="mapsLink" class="block text-sm font-semibold text-gray-700 mb-2">
+                Maps link
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                  </svg>
+                </div>
+                <input 
+                  type="url" 
+                  id="mapsLink" 
+                  name="mapsLink" 
+                  placeholder="https://maps.google.com/... (Opcionális)"
+                  class="w-full pl-12 pr-4 py-3.5 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                >
+              </div>
+              <p class="mt-2 text-xs text-gray-500 italic">Opcionális: másold be ide a Google Maps linkjét</p>
+            </div>
+
+            <!-- Amenities -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-3">
+                Mi található meg a helyen? <span class="text-orange-500">*</span>
+              </label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-[#FFF9F3] border border-[#E8DDD0] rounded-xl">
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="babasarok" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">👶 Babasarok</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="gyerek_gondozo" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">🛡️ Gyerek gondozó</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="jatszo_sarok" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">🎮 Játszó sarok</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="pelenkazo" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">🧴 Pelenkázó</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="magas_szek" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">🪑 Magas szék</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="parkolas" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">🅿️ Parkolás</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="kert" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">🌳 Kert</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="gyerek_menu" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">🍽️ Gyerekmenü</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="babakocsi_barat" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">👶 Babakocsi-barát</span>
+                </label>
+                <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
+                  <input type="checkbox" name="amenities" value="wifi" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900">📶 Ingyenes WiFi</span>
+                </label>
+              </div>
+              <p class="mt-2 text-xs text-gray-500 italic">Válassz legalább egy opciót</p>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex gap-4 mt-8 pt-6 border-t border-[#E8DDD0]">
+            <button 
+              type="button" 
+              id="cancelSubmitRecommendation"
+              class="flex-1 py-3.5 px-6 bg-white border-2 border-[#E8DDD0] text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:bg-gray-50 hover:border-gray-300"
+            >
+              Mégse
+            </button>
+            <button 
+              type="submit"
+              class="flex-1 py-3.5 px-6 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Ajánlás beküldése
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

@@ -1297,28 +1297,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    if (submitRecommendation) {
-        submitRecommendation.addEventListener('click', (e) => {
-            e.preventDefault();
-            const submitRecommendationModal = document.getElementById('submitRecommendationModal');
-            if (submitRecommendationModal) {
-                submitRecommendationModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-    }
-    
     // Submit Recommendation Modal kezelés
     const submitRecommendationModal = document.getElementById('submitRecommendationModal');
+    const submitRecommendationBackdrop = document.getElementById('submitRecommendationBackdrop');
     const closeSubmitRecommendationModal = document.getElementById('closeSubmitRecommendationModal');
     const cancelSubmitRecommendation = document.getElementById('cancelSubmitRecommendation');
     const submitRecommendationForm = document.getElementById('submitRecommendationForm');
     
-    function closeSubmitRecommendationModalFunc() {
+    function openSubmitRecommendationModal() {
         if (submitRecommendationModal) {
-            submitRecommendationModal.classList.remove('active');
-            document.body.style.overflow = '';
+            submitRecommendationModal.classList.remove('hidden');
+            submitRecommendationModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize animation state
+            const content = document.getElementById('submitRecommendationContent');
+            if (content) {
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+            }
+            if (submitRecommendationBackdrop) {
+                submitRecommendationBackdrop.classList.remove('opacity-100');
+                submitRecommendationBackdrop.classList.add('opacity-0');
+            }
+            
+            // Trigger animation
+            setTimeout(() => {
+                if (content) {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }
+                if (submitRecommendationBackdrop) {
+                    submitRecommendationBackdrop.classList.remove('opacity-0');
+                    submitRecommendationBackdrop.classList.add('opacity-100');
+                }
+            }, 10);
         }
+    }
+    
+    function closeSubmitRecommendationModalFunc() {
+        const content = document.getElementById('submitRecommendationContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (submitRecommendationBackdrop) {
+            submitRecommendationBackdrop.classList.remove('opacity-100');
+            submitRecommendationBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            if (submitRecommendationModal) {
+                submitRecommendationModal.classList.add('hidden');
+                submitRecommendationModal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        }, 200);
+    }
+    
+    if (submitRecommendation) {
+        submitRecommendation.addEventListener('click', (e) => {
+            e.preventDefault();
+            openSubmitRecommendationModal();
+        });
     }
     
     if (closeSubmitRecommendationModal) {
@@ -1332,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal bezárása háttérre kattintva
     if (submitRecommendationModal) {
         submitRecommendationModal.addEventListener('click', (e) => {
-            if (e.target === submitRecommendationModal) {
+            if (e.target === submitRecommendationModal || e.target === submitRecommendationBackdrop) {
                 closeSubmitRecommendationModalFunc();
             }
         });
@@ -1340,7 +1381,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && submitRecommendationModal && submitRecommendationModal.classList.contains('active')) {
+        if (e.key === 'Escape' && submitRecommendationModal && !submitRecommendationModal.classList.contains('hidden')) {
             closeSubmitRecommendationModalFunc();
         }
     });
