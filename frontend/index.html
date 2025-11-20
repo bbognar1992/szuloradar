@@ -171,9 +171,39 @@
           <!-- JS tölti fel -->
         </div>
 
-        <!-- Body -->
-        <div id="placeDetailBody" class="px-6 py-6 md:px-10 md:py-8 max-h-[calc(90vh-200px)] overflow-y-auto">
-          <!-- JS tölti fel -->
+        <!-- Tabs -->
+        <div class="border-b border-[#E8DDD0] bg-white">
+          <div class="flex">
+            <button id="placeDetailTabInfo" class="flex-1 px-6 py-4 text-sm font-semibold text-gray-700 hover:text-teal-600 border-b-2 border-teal-500 transition-all duration-200">
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Információk
+              </span>
+            </button>
+            <button id="placeDetailTabRecommendations" class="flex-1 px-6 py-4 text-sm font-semibold text-gray-500 hover:text-teal-600 border-b-2 border-transparent hover:border-teal-300 transition-all duration-200">
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                </svg>
+                Ajánlások
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="max-h-[calc(90vh-200px)] overflow-y-auto">
+          <!-- Info Tab Content -->
+          <div id="placeDetailTabInfoContent" class="px-6 py-6 md:px-10 md:py-8">
+        <!-- JS tölti fel -->
+      </div>
+          
+          <!-- Recommendations Tab Content -->
+          <div id="placeDetailTabRecommendationsContent" class="hidden px-6 py-6 md:px-10 md:py-8">
+        <!-- JS tölti fel -->
+          </div>
         </div>
       </div>
     </div>
@@ -207,12 +237,12 @@
           </div>
           <h2 class="text-3xl font-bold text-gray-900 mb-2 text-center">Fiókom</h2>
           <p class="text-gray-600 text-sm text-center">Felhasználói beállítások és profil adatok kezelése</p>
-        </div>
+      </div>
 
         <!-- Form - Scrollable -->
         <form id="myAccountForm" class="px-8 py-6 overflow-y-auto flex-1">
           <div class="space-y-8">
-            <!-- Előfizetés módosítása -->
+        <!-- Előfizetés módosítása -->
             <div class="pb-8 border-b border-[#E8DDD0]">
               <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,23 +256,23 @@
                   <div class="flex-1">
                     <div class="font-semibold text-gray-900 group-has-[:checked]:text-teal-600">Ingyenes</div>
                   </div>
-                </label>
+            </label>
                 <label class="flex items-center gap-3 p-4 bg-white border-2 border-[#E8DDD0] rounded-xl cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group has-[:checked]:border-teal-500 has-[:checked]:bg-teal-50">
                   <input type="radio" name="subscription" value="premium" class="w-5 h-5 text-teal-500 border-[#E8DDD0] focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <div class="flex-1">
                     <div class="font-semibold text-gray-900 group-has-[:checked]:text-teal-600">Prémium</div>
                   </div>
-                </label>
+            </label>
                 <label class="flex items-center gap-3 p-4 bg-white border-2 border-[#E8DDD0] rounded-xl cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group has-[:checked]:border-teal-500 has-[:checked]:bg-teal-50">
                   <input type="radio" name="subscription" value="family" class="w-5 h-5 text-teal-500 border-[#E8DDD0] focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <div class="flex-1">
                     <div class="font-semibold text-gray-900 group-has-[:checked]:text-teal-600">Családi csomag</div>
                   </div>
-                </label>
-              </div>
-            </div>
+            </label>
+          </div>
+        </div>
 
-            <!-- Profil kép feltöltése -->
+        <!-- Profil kép feltöltése -->
             <div class="pb-8 border-b border-[#E8DDD0]">
               <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,15 +283,15 @@
               <div class="flex flex-col items-center gap-4">
                 <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-teal-500 shadow-lg bg-gradient-to-br from-teal-100 to-orange-100 flex items-center justify-center" id="profileImagePreview">
                   <img src="https://via.placeholder.com/128" alt="Profil kép" id="profileImage" class="w-full h-full object-cover">
-                </div>
+            </div>
                 <label for="profileImageInput" class="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer">
                   Kép kiválasztása
                 </label>
                 <input type="file" id="profileImageInput" name="profileImage" accept="image/*" class="hidden">
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <!-- Személyes adatok -->
+        <!-- Személyes adatok -->
             <div class="pb-8 border-b border-[#E8DDD0]">
               <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -299,7 +329,7 @@
                       <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                       </svg>
-                    </div>
+            </div>
                     <input 
                       type="email" 
                       id="accountEmail" 
@@ -307,8 +337,8 @@
                       placeholder="email@pelda.hu"
                       class="w-full pl-12 pr-4 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
                     >
-                  </div>
-                </div>
+            </div>
+          </div>
                 <div>
                   <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Telefonszám</label>
                   <div class="relative">
@@ -325,11 +355,11 @@
                       class="w-full pl-12 pr-4 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
                     >
                   </div>
-                </div>
-              </div>
-            </div>
+          </div>
+          </div>
+        </div>
 
-            <!-- Család adatok -->
+        <!-- Család adatok -->
             <div>
               <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,11 +382,11 @@
                         name="parentCount"
                         class="w-full pl-4 pr-12 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 appearance-none cursor-pointer"
                       >
-                        <option value="1">1 szülő</option>
-                        <option value="2" selected>2 szülő</option>
-                        <option value="3">3+ szülő</option>
-                      </select>
-                    </div>
+              <option value="1">1 szülő</option>
+              <option value="2" selected>2 szülő</option>
+              <option value="3">3+ szülő</option>
+            </select>
+          </div>
                   </div>
                   <div>
                     <label for="childCount" class="block text-sm font-semibold text-gray-700 mb-2">Hány gyerek van a családban?</label>
@@ -371,13 +401,13 @@
                       class="w-full px-4 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
                     >
                   </div>
-                </div>
+          </div>
                 <div id="childrenContainer" class="space-y-3">
-                  <!-- Gyerekek mezői dinamikusan töltődnek fel -->
+            <!-- Gyerekek mezői dinamikusan töltődnek fel -->
                 </div>
               </div>
-            </div>
           </div>
+        </div>
 
           <!-- Form Actions -->
           <div class="flex gap-4 mt-8 pt-6 border-t border-[#E8DDD0]">
@@ -397,8 +427,8 @@
               </svg>
               Mentés
             </button>
-          </div>
-        </form>
+        </div>
+      </form>
       </div>
     </div>
   </div>
@@ -448,7 +478,7 @@
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
-          </div>
+      </div>
           <h2 class="text-3xl font-bold text-gray-900 mb-2">Bejelentkezés</h2>
           <p class="text-gray-600 text-sm">Jelentkezz be a SzülőRadar fiókodba</p>
         </div>
@@ -497,7 +527,7 @@
                 class="w-full pl-12 pr-4 py-3.5 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
               >
             </div>
-          </div>
+        </div>
 
           <!-- Options Row -->
           <div class="flex items-center justify-between">
@@ -508,7 +538,7 @@
                 class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer"
               >
               <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Emlékezz rám</span>
-            </label>
+          </label>
             <a href="#" class="text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors">
               Elfelejtetted a jelszavad?
             </a>
@@ -532,8 +562,8 @@
             </div>
             <div class="relative flex justify-center text-sm">
               <span class="px-4 bg-[#FFFBF7] text-gray-500">vagy</span>
-            </div>
-          </div>
+        </div>
+        </div>
 
           <!-- Register Button -->
           <button 
@@ -545,7 +575,7 @@
             </svg>
             Regisztráció
           </button>
-        </form>
+      </form>
       </div>
     </div>
   </div>
@@ -575,7 +605,7 @@
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-          </div>
+      </div>
           <h2 class="text-3xl font-bold text-gray-900 mb-2 text-center">Ajánlás beküldése</h2>
           <p class="text-gray-600 text-sm text-center">Oszd meg kedvenc gyerekbarát helyedet más szülőkkel</p>
         </div>
@@ -623,14 +653,14 @@
                   required
                   class="w-full pl-4 pr-12 py-3.5 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 appearance-none cursor-pointer"
                 >
-                  <option value="">-- Válassz típust --</option>
-                  <option value="kávézó">☕ Kávézó</option>
-                  <option value="étterem">🍽️ Étterem</option>
-                  <option value="játszóház">🎪 Játszóház</option>
-                  <option value="konditerem">💪 Edzőterem</option>
-                  <option value="szállás">🏨 Szállás</option>
-                </select>
-              </div>
+            <option value="">-- Válassz típust --</option>
+            <option value="kávézó">☕ Kávézó</option>
+            <option value="étterem">🍽️ Étterem</option>
+            <option value="játszóház">🎪 Játszóház</option>
+            <option value="konditerem">💪 Edzőterem</option>
+            <option value="szállás">🏨 Szállás</option>
+          </select>
+        </div>
             </div>
 
             <!-- Recommendation Text -->
@@ -666,9 +696,9 @@
                   placeholder="https://maps.google.com/... (Opcionális)"
                   class="w-full pl-12 pr-4 py-3.5 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
                 >
-              </div>
+        </div>
               <p class="mt-2 text-xs text-gray-500 italic">Opcionális: másold be ide a Google Maps linkjét</p>
-            </div>
+        </div>
 
             <!-- Amenities -->
             <div>
@@ -679,43 +709,43 @@
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="babasarok" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">👶 Babasarok</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="gyerek_gondozo" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">🛡️ Gyerek gondozó</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="jatszo_sarok" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">🎮 Játszó sarok</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="pelenkazo" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">🧴 Pelenkázó</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="magas_szek" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">🪑 Magas szék</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="parkolas" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">🅿️ Parkolás</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="kert" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">🌳 Kert</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="gyerek_menu" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">🍽️ Gyerekmenü</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="babakocsi_barat" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">👶 Babakocsi-barát</span>
-                </label>
+            </label>
                 <label class="flex items-center gap-2 p-3 bg-white border border-[#E8DDD0] rounded-lg cursor-pointer hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200 group">
                   <input type="checkbox" name="amenities" value="wifi" class="w-5 h-5 text-teal-500 border-[#E8DDD0] rounded focus:ring-2 focus:ring-teal-500 cursor-pointer">
                   <span class="text-sm text-gray-700 group-hover:text-gray-900">📶 Ingyenes WiFi</span>
-                </label>
+            </label>
               </div>
               <p class="mt-2 text-xs text-gray-500 italic">Válassz legalább egy opciót</p>
             </div>
@@ -739,8 +769,8 @@
               </svg>
               Ajánlás beküldése
             </button>
-          </div>
-        </form>
+        </div>
+      </form>
       </div>
     </div>
   </div>

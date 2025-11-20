@@ -439,7 +439,10 @@ function createPlaceCard(place) {
 function showPlaceDetail(place) {
     const modal = document.getElementById('placeDetailModal');
     const header = document.getElementById('placeDetailHeader');
-    const body = document.getElementById('placeDetailBody');
+    const infoContent = document.getElementById('placeDetailTabInfoContent');
+    const recommendationsContent = document.getElementById('placeDetailTabRecommendationsContent');
+    const tabInfo = document.getElementById('placeDetailTabInfo');
+    const tabRecommendations = document.getElementById('placeDetailTabRecommendations');
     
     const typeLabels = {
         'kávézó': '☕ Kávézó',
@@ -488,7 +491,29 @@ function showPlaceDetail(place) {
         </div>
     `;
     
-    body.innerHTML = `
+    // Mock ajánlások (később backend-ből jönnek)
+    const mockRecommendations = [
+        {
+            author: 'Kovács Anna',
+            rating: 5,
+            text: 'Fantasztikus hely! A gyerekek imádják a játszóteret, és a kávé is kiváló. Mindenkinek ajánlom!',
+            date: '2024. január 15.'
+        },
+        {
+            author: 'Nagy Péter',
+            rating: 4,
+            text: 'Nagyon barátságos hely, jó ár-érték arány. A személyzet segítőkész volt.',
+            date: '2024. január 10.'
+        },
+        {
+            author: 'Szabó Mária',
+            rating: 5,
+            text: 'Családbarát környezet, tiszta, rendezett. A gyerekek biztonságban érezték magukat.',
+            date: '2024. január 5.'
+        }
+    ];
+    
+    infoContent.innerHTML = `
         <!-- Address Section -->
         <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
             <div class="flex items-start gap-3 mb-4">
@@ -613,6 +638,76 @@ function showPlaceDetail(place) {
             `}
         </div>
     `;
+    
+    // Ajánlások tab tartalma
+    recommendationsContent.innerHTML = `
+        <div class="space-y-6">
+            ${mockRecommendations.length > 0 ? mockRecommendations.map(rec => {
+                const starsHTML = Array(5).fill(0).map((_, i) => 
+                    i < rec.rating 
+                        ? '<span class="text-yellow-400 text-lg">⭐</span>' 
+                        : '<span class="text-gray-300 text-lg">⭐</span>'
+                ).join('');
+                
+                return `
+                    <div class="bg-white border border-[#E8DDD0] rounded-xl p-6 hover:shadow-md transition-all duration-200">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-1">${rec.author}</h4>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="flex items-center gap-1">
+                                        ${starsHTML}
+                                    </div>
+                                    <span class="text-sm text-gray-500">${rec.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed">${rec.text}</p>
+                    </div>
+                `;
+            }).join('') : `
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Még nincsenek ajánlások</h3>
+                    <p class="text-gray-600">Legyél te az első, aki ajánlást ír erről a helyről!</p>
+                </div>
+            `}
+        </div>
+    `;
+    
+    // Tab váltás kezelés
+    function switchTab(tabName) {
+        if (tabName === 'info') {
+            infoContent.classList.remove('hidden');
+            recommendationsContent.classList.add('hidden');
+            tabInfo.classList.add('border-teal-500', 'text-gray-700');
+            tabInfo.classList.remove('border-transparent', 'text-gray-500');
+            tabRecommendations.classList.remove('border-teal-500', 'text-gray-700');
+            tabRecommendations.classList.add('border-transparent', 'text-gray-500');
+        } else {
+            infoContent.classList.add('hidden');
+            recommendationsContent.classList.remove('hidden');
+            tabRecommendations.classList.add('border-teal-500', 'text-gray-700');
+            tabRecommendations.classList.remove('border-transparent', 'text-gray-500');
+            tabInfo.classList.remove('border-teal-500', 'text-gray-700');
+            tabInfo.classList.add('border-transparent', 'text-gray-500');
+        }
+    }
+    
+    // Tab event listeners
+    if (tabInfo) {
+        tabInfo.onclick = () => switchTab('info');
+    }
+    if (tabRecommendations) {
+        tabRecommendations.onclick = () => switchTab('recommendations');
+    }
+    
+    // Alapértelmezett tab: Info
+    switchTab('info');
     
     // Show modal with animation
     modal.classList.remove('hidden');
