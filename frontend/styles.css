@@ -16,11 +16,11 @@
     --primary-hover: var(--color-primary-hover);
     --secondary-color: var(--color-secondary);
     --background: var(--color-bg);
-    --surface: #ffffff;
+    --surface: #FFFBF7;              /* Meleg, finom krém szín a panelekhez */
     --surface-hover: #FFF8F1;
     --text-primary: var(--color-text);
     --text-secondary: #666666;
-    --border-color: var(--color-muted);
+    --border-color: #E8DDD0;         /* Melegebb, harmonikusabb szegély szín */
     
     /* Árnyékok - finom, barátságos */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
@@ -44,17 +44,17 @@
 body {
     margin: 0;
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    background: var(--color-bg);
+    background: #FFF9F3;            /* Melegebb, harmonikusabb háttér */
     background-image: 
-        radial-gradient(circle at 15% 25%, rgba(91, 206, 194, 0.25) 0%, rgba(91, 206, 194, 0.25) 25%, transparent 25%),
-        radial-gradient(circle at 85% 15%, rgba(255, 165, 102, 0.25) 0%, rgba(255, 165, 102, 0.25) 30%, transparent 30%),
-        radial-gradient(circle at 45% 75%, rgba(255, 230, 150, 0.22) 0%, rgba(255, 230, 150, 0.22) 28%, transparent 28%),
-        radial-gradient(circle at 70% 60%, rgba(91, 206, 194, 0.20) 0%, rgba(91, 206, 194, 0.20) 35%, transparent 35%),
-        radial-gradient(circle at 25% 85%, rgba(255, 165, 102, 0.22) 0%, rgba(255, 165, 102, 0.22) 32%, transparent 32%),
-        radial-gradient(circle at 55% 30%, rgba(255, 230, 150, 0.18) 0%, rgba(255, 230, 150, 0.18) 40%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(91, 206, 194, 0.15) 0%, rgba(91, 206, 194, 0.15) 38%, transparent 38%),
-        radial-gradient(circle at 10% 60%, rgba(255, 165, 102, 0.20) 0%, rgba(255, 165, 102, 0.20) 27%, transparent 27%),
-        radial-gradient(circle at 65% 15%, rgba(255, 230, 150, 0.25) 0%, rgba(255, 230, 150, 0.25) 33%, transparent 33%);
+        radial-gradient(circle at 15% 25%, rgba(91, 206, 194, 0.18) 0%, rgba(91, 206, 194, 0.18) 25%, transparent 25%),
+        radial-gradient(circle at 85% 15%, rgba(255, 165, 102, 0.18) 0%, rgba(255, 165, 102, 0.18) 30%, transparent 30%),
+        radial-gradient(circle at 45% 75%, rgba(255, 230, 150, 0.16) 0%, rgba(255, 230, 150, 0.16) 28%, transparent 28%),
+        radial-gradient(circle at 70% 60%, rgba(91, 206, 194, 0.15) 0%, rgba(91, 206, 194, 0.15) 35%, transparent 35%),
+        radial-gradient(circle at 25% 85%, rgba(255, 165, 102, 0.16) 0%, rgba(255, 165, 102, 0.16) 32%, transparent 32%),
+        radial-gradient(circle at 55% 30%, rgba(255, 230, 150, 0.14) 0%, rgba(255, 230, 150, 0.14) 40%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(91, 206, 194, 0.12) 0%, rgba(91, 206, 194, 0.12) 38%, transparent 38%),
+        radial-gradient(circle at 10% 60%, rgba(255, 165, 102, 0.15) 0%, rgba(255, 165, 102, 0.15) 27%, transparent 27%),
+        radial-gradient(circle at 65% 15%, rgba(255, 230, 150, 0.18) 0%, rgba(255, 230, 150, 0.18) 33%, transparent 33%);
     background-attachment: fixed;
     background-size: 100% 100%;
     color: var(--text-primary);
@@ -146,7 +146,7 @@ body {
     box-sizing: border-box;
     border: 1px solid var(--border-color);
     border-radius: 30px;
-    background: var(--surface);
+    background: #FFFFFF;            /* Tiszta fehér a keresőmezőben */
     color: var(--text-secondary);
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);

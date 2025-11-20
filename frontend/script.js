@@ -342,7 +342,7 @@ function getRandomPlaces(count = 4) {
 // Helyszín kártya generálása
 function createPlaceCard(place) {
     const card = document.createElement('div');
-    card.className = 'place-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden group hover:-translate-y-1';
+    card.className = 'place-card bg-[#FFFBF7] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-[#E8DDD0] overflow-hidden group hover:-translate-y-1';
     card.setAttribute('data-place-id', mockPlaces.indexOf(place));
     
     const typeLabels = {
@@ -403,9 +403,9 @@ function createPlaceCard(place) {
                 </div>
                 
                 ${place.amenities && place.amenities.length > 0 ? `
-                <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
+                <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-[#E8DDD0]">
                     ${place.amenities.slice(0, 3).map(amenity => `
-                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-[#FFF9F3] text-gray-700 border border-[#E8DDD0]">
                             ${amenity}
                         </span>
                     `).join('')}
@@ -416,7 +416,7 @@ function createPlaceCard(place) {
                 ` : ''}
             </div>
             
-            <div class="mt-4 pt-4 border-t border-gray-100">
+            <div class="mt-4 pt-4 border-t border-[#E8DDD0]">
                 <div class="flex items-center justify-between">
                     <span class="text-xs text-gray-500">Részletek megtekintése</span>
                     <svg class="w-5 h-5 text-teal-500 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
