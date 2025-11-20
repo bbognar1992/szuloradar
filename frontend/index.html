@@ -144,14 +144,33 @@
   </footer>
 
   <!-- Place Detail Modal -->
-  <div class="place-detail-modal" id="placeDetailModal">
-    <div class="place-detail-content">
-      <button class="place-detail-close" id="closePlaceDetail" aria-label="Bezárás">&times;</button>
-      <div class="place-detail-header" id="placeDetailHeader">
-        <!-- JS tölti fel -->
-      </div>
-      <div class="place-detail-body" id="placeDetailBody">
-        <!-- JS tölti fel -->
+  <div id="placeDetailModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200" id="placeDetailBackdrop"></div>
+    
+    <!-- Modal Container - Centered -->
+    <div class="fixed inset-0 flex items-center justify-center p-4 pointer-events-none" onclick="event.stopPropagation()">
+      <div class="relative w-full max-w-3xl bg-[#FFFBF7] rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-200 pointer-events-auto" id="placeDetailContent" onclick="event.stopPropagation()">
+        <!-- Close Button -->
+        <button 
+          id="closePlaceDetail" 
+          aria-label="Bezárás"
+          class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 hover:bg-white text-gray-600 hover:text-gray-900 transition-all duration-200 hover:rotate-90 hover:scale-110 shadow-md hover:shadow-lg"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- Header -->
+        <div id="placeDetailHeader" class="bg-gradient-to-br from-teal-50 to-orange-50 px-6 py-8 md:px-10 md:py-10 border-b border-[#E8DDD0]">
+          <!-- JS tölti fel -->
+        </div>
+
+        <!-- Body -->
+        <div id="placeDetailBody" class="px-6 py-6 md:px-10 md:py-8 max-h-[calc(90vh-200px)] overflow-y-auto">
+          <!-- JS tölti fel -->
+        </div>
       </div>
     </div>
   </div>

@@ -449,71 +449,199 @@ function showPlaceDetail(place) {
         'szállás': '🏨 Szállás'
     };
     
+    const typeColors = {
+        'kávézó': 'bg-amber-100 text-amber-800 border-amber-200',
+        'játszóház': 'bg-purple-100 text-purple-800 border-purple-200',
+        'étterem': 'bg-orange-100 text-orange-800 border-orange-200',
+        'konditerem': 'bg-blue-100 text-blue-800 border-blue-200',
+        'szállás': 'bg-green-100 text-green-800 border-green-200'
+    };
+    
+    // Generate star rating
+    const fullStars = Math.floor(place.rating);
+    const hasHalfStar = place.rating % 1 >= 0.5;
+    let starsHTML = '';
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<span class="text-yellow-400 text-2xl">⭐</span>';
+    }
+    if (hasHalfStar && fullStars < 5) {
+        starsHTML += '<span class="text-yellow-400 text-2xl">⭐</span>';
+    }
+    for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
+        starsHTML += '<span class="text-gray-300 text-2xl">⭐</span>';
+    }
+    
     header.innerHTML = `
-        <div class="place-detail-title">
-            <h2>${place.name}</h2>
-            <span class="place-detail-type">${typeLabels[place.type] || place.type}</span>
-        </div>
-        <div class="place-detail-rating">
-            <span class="rating-big">${place.rating}</span>
-            <span class="rating-stars">${'⭐'.repeat(Math.round(place.rating))}</span>
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div class="flex-1">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">${place.name}</h2>
+                <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border ${typeColors[place.type] || 'bg-gray-100 text-gray-800 border-gray-200'}">
+                    ${typeLabels[place.type] || place.type}
+                </span>
+            </div>
+            <div class="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl px-5 py-4 shadow-sm">
+                <span class="text-4xl font-bold text-orange-500">${place.rating}</span>
+                <div class="flex items-center gap-1">
+                    ${starsHTML}
+                </div>
+            </div>
         </div>
     `;
     
     body.innerHTML = `
-        <div class="place-detail-section">
-            <h3>📍 Cím</h3>
-            <p>${place.address}</p>
-            <a href="https://maps.google.com/?q=${encodeURIComponent(place.address)}" target="_blank" class="map-link">
-                Megnyitás térképen
-            </a>
+        <!-- Address Section -->
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">📍 Cím</h3>
+                    <p class="text-gray-700 mb-4">${place.address}</p>
+                    <a 
+                        href="https://maps.google.com/?q=${encodeURIComponent(place.address)}" 
+                        target="_blank" 
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                        Megnyitás térképen
+                    </a>
+                </div>
+            </div>
         </div>
         
         ${place.phone ? `
-        <div class="place-detail-section">
-            <h3>📞 Telefon</h3>
-            <p><a href="tel:${place.phone.replace(/\s/g, '')}">${place.phone}</a></p>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">📞 Telefon</h3>
+                    <a href="tel:${place.phone.replace(/\s/g, '')}" class="text-teal-600 hover:text-teal-700 font-medium text-lg transition-colors">
+                        ${place.phone}
+                    </a>
+                </div>
+            </div>
         </div>
         ` : ''}
         
         ${place.hours ? `
-        <div class="place-detail-section">
-            <h3>🕐 Nyitvatartás</h3>
-            <p>${place.hours}</p>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">🕐 Nyitvatartás</h3>
+                    <p class="text-gray-700">${place.hours}</p>
+                </div>
+            </div>
         </div>
         ` : ''}
         
         ${place.description ? `
-        <div class="place-detail-section">
-            <h3>📝 Leírás</h3>
-            <p>${place.description}</p>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">📝 Leírás</h3>
+                    <p class="text-gray-700 leading-relaxed">${place.description}</p>
+                </div>
+            </div>
         </div>
         ` : ''}
         
         ${place.amenities && place.amenities.length > 0 ? `
-        <div class="place-detail-section">
-            <h3>✨ Szolgáltatások</h3>
-            <ul class="amenities-list">
-                ${place.amenities.map(amenity => `<li>${amenity}</li>`).join('')}
-            </ul>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">✨ Szolgáltatások</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        ${place.amenities.map(amenity => `
+                            <div class="flex items-center gap-2 px-4 py-3 bg-[#FFF9F3] border border-[#E8DDD0] rounded-lg hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200">
+                                <span class="text-teal-500">✓</span>
+                                <span class="text-gray-700 text-sm font-medium">${amenity}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
         </div>
         ` : ''}
         
-        <div class="place-detail-actions">
+        <!-- Action Button -->
+        <div class="pt-6">
             ${isPlaceSaved(place.name, place.address) ? `
-                <button class="remove-from-list-button" onclick="removeFromList('${place.name}', '${place.address}')">
-                    🗑️ Törlés a listából
+                <button 
+                    onclick="removeFromList('${place.name}', '${place.address}')"
+                    class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Törlés a listából
                 </button>
             ` : `
-                <button class="add-to-list-button" onclick="addToList('${place.name}', '${place.address}', '${place.type}', ${place.rating})">
-                    ➕ Listához adás
+                <button 
+                    onclick="addToList('${place.name}', '${place.address}', '${place.type}', ${place.rating})"
+                    class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Listához adás
                 </button>
             `}
         </div>
     `;
     
-    modal.classList.add('active');
+    // Show modal with animation
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
     document.body.style.overflow = 'hidden';
+    
+    // Initialize animation state
+    const content = document.getElementById('placeDetailContent');
+    const backdrop = document.getElementById('placeDetailBackdrop');
+    if (content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+    }
+    if (backdrop) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+    }
+    
+    // Trigger animation
+    setTimeout(() => {
+        if (content) {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }
+        if (backdrop) {
+            backdrop.classList.remove('opacity-0');
+            backdrop.classList.add('opacity-100');
+        }
+    }, 10);
 }
 
 // Listához adás funkció
@@ -1293,28 +1421,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Place Detail Modal kezelés
     const placeDetailModal = document.getElementById('placeDetailModal');
     const closePlaceDetail = document.getElementById('closePlaceDetail');
+    const placeDetailBackdrop = document.getElementById('placeDetailBackdrop');
+    
+    function closePlaceDetailModal() {
+        const content = document.getElementById('placeDetailContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (placeDetailBackdrop) {
+            placeDetailBackdrop.classList.remove('opacity-100');
+            placeDetailBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            placeDetailModal.classList.add('hidden');
+            placeDetailModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }, 200);
+    }
     
     // Modal bezárása X gombbal
     if (closePlaceDetail) {
-        closePlaceDetail.addEventListener('click', () => {
-            placeDetailModal.classList.remove('active');
-            document.body.style.overflow = '';
-        });
+        closePlaceDetail.addEventListener('click', closePlaceDetailModal);
     }
     
     // Modal bezárása háttérre kattintva
-    placeDetailModal.addEventListener('click', (e) => {
-        if (e.target === placeDetailModal) {
-            placeDetailModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
+    if (placeDetailBackdrop) {
+        placeDetailBackdrop.addEventListener('click', closePlaceDetailModal);
+    }
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && placeDetailModal.classList.contains('active')) {
-            placeDetailModal.classList.remove('active');
-            document.body.style.overflow = '';
+        if (e.key === 'Escape' && !placeDetailModal.classList.contains('hidden')) {
+            closePlaceDetailModal();
         }
     });
 });
