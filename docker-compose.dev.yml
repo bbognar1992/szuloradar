@@ -55,7 +55,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
+      - ./frontend:/usr/share/nginx/html
     networks:
       - szuloradar_network
     restart: unless-stopped
