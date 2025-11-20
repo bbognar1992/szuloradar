@@ -1008,36 +1008,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginTrigger = document.getElementById('loginTrigger');
     const closeLoginModal = document.getElementById('closeLoginModal');
     const loginForm = document.getElementById('loginForm');
+    const loginModalBackdrop = document.getElementById('loginModalBackdrop');
+    
+    function openLoginModal() {
+        loginModal.classList.remove('hidden');
+        loginModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        
+        // Initialize animation state
+        const content = document.getElementById('loginModalContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (loginModalBackdrop) {
+            loginModalBackdrop.classList.remove('opacity-100');
+            loginModalBackdrop.classList.add('opacity-0');
+        }
+        
+        // Trigger animation
+        setTimeout(() => {
+            if (content) {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }
+            if (loginModalBackdrop) {
+                loginModalBackdrop.classList.remove('opacity-0');
+                loginModalBackdrop.classList.add('opacity-100');
+            }
+        }, 10);
+    }
+    
+    function closeLoginModalFunc() {
+        const content = document.getElementById('loginModalContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (loginModalBackdrop) {
+            loginModalBackdrop.classList.remove('opacity-100');
+            loginModalBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            loginModal.classList.add('hidden');
+            loginModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }, 200);
+    }
     
     // Modal megnyitása
     if (loginTrigger) {
-        loginTrigger.addEventListener('click', () => {
-            loginModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Scroll letiltás háttérben
-        });
+        loginTrigger.addEventListener('click', openLoginModal);
     }
     
     // Modal bezárása X gombbal
     if (closeLoginModal) {
-        closeLoginModal.addEventListener('click', () => {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = ''; // Scroll visszaállítás
-        });
+        closeLoginModal.addEventListener('click', closeLoginModalFunc);
     }
     
     // Modal bezárása háttérre kattintva
-    loginModal.addEventListener('click', (e) => {
-        if (e.target === loginModal) {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
+    if (loginModal) {
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal || e.target === loginModalBackdrop) {
+                closeLoginModalFunc();
+            }
+        });
+    }
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && loginModal.classList.contains('active')) {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = '';
+        if (e.key === 'Escape' && !loginModal.classList.contains('hidden')) {
+            closeLoginModalFunc();
         }
     });
     
@@ -1048,8 +1090,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Automatikusan elfogadja a bejelentkezést, nincs validáció
             // Modal bezárása és scroll visszaállítás
-            loginModal.classList.remove('active');
-            document.body.style.overflow = '';
+            closeLoginModalFunc();
             
             // Bejelentkezés gomb elrejtése, hamburger menü és listám gomb megjelenítése
             const loginTrigger = document.getElementById('loginTrigger');
