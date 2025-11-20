@@ -47,6 +47,15 @@ A kid-friendly places discovery application that helps parents find and share re
    make dev-down-old
    ```
 
+## 👤 Test User Account
+
+A test user is automatically seeded in the development database for authentication testing:
+
+- **Email:** `test@example.com`
+- **Password:** `TestPassword123!`
+
+This test user is created via the migration file [`7bb6cf7c0f3d_add_test_user_for_auth_testing.py`](backend/alembic/versions/7bb6cf7c0f3d_add_test_user_for_auth_testing.py), ensuring you can log in to the backend immediately after setup. See [Authentication Usage](backend/AUTH_USAGE.md) for example login instructions.
+
 ## 📋 Available Commands
 
 Run `make help` to see all available commands.
