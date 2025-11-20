@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { apiClient, User } from '@/lib/api';
+import { login as apiLogin, register as apiRegister, getCurrentUser, User } from '@/lib/api';
 
 interface AuthContextType {
   user: User | null;
@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check if user is logged in on mount
     const token = localStorage.getItem('auth_token');
     if (token) {
-      apiClient.getCurrentUser()
+      getCurrentUser()
         .then(setUser)
         .catch(() => {
           // Token invalid, clear it
@@ -35,14 +35,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await apiClient.login({ email, password });
+    const response = await apiLogin({ email, password });
     localStorage.setItem('auth_token', response.access_token);
-    const userData = await apiClient.getCurrentUser();
+    const userData = await getCurrentUser();
     setUser(userData);
   };
 
   const register = async (email: string, password: string, firstName?: string, lastName?: string) => {
-    await apiClient.register({ email, password, first_name: firstName, last_name: lastName });
+    await apiRegister({ email, password, first_name: firstName, last_name: lastName });
     // After registration, automatically log in
     await login(email, password);
   };

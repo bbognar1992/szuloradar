@@ -29,63 +29,53 @@ export interface User {
   is_active: boolean;
 }
 
-class ApiClient {
-  private baseUrl: string;
+const getAuthToken = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('auth_token');
+};
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+const request = async <T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> => {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
-  private getAuthToken(): string | null {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('auth_token');
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
+    throw new Error(error.detail || `HTTP error! status: ${response.status}`);
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    const token = this.getAuthToken();
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    };
+  return response.json();
+};
 
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
+export const login = async (data: LoginRequest): Promise<TokenResponse> => {
+  return request<TokenResponse>('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      ...options,
-      headers,
-    });
+export const register = async (data: RegisterRequest): Promise<User> => {
+  return request<User>('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
-      throw new Error(error.detail || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  async login(data: LoginRequest): Promise<TokenResponse> {
-    return this.request<TokenResponse>('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async register(data: RegisterRequest): Promise<User> {
-    return this.request<User>('/api/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async getCurrentUser(): Promise<User> {
-    return this.request<User>('/api/auth/me');
-  }
-}
-
-export const apiClient = new ApiClient(API_BASE_URL);
+export const getCurrentUser = async (): Promise<User> => {
+  return request<User>('/api/auth/me');
+};
 
