@@ -377,13 +377,13 @@ function createPlaceCard(place) {
     
     card.innerHTML = `
         <div class="p-6">
-            <div class="flex items-start justify-between mb-3">
-                <h3 class="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors duration-300 line-clamp-2 flex-1 pr-2">
-                    ${place.name}
-                </h3>
-                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold ${typeColors[place.type] || 'bg-gray-100 text-gray-800'} whitespace-nowrap flex-shrink-0">
+            <div class="mb-3">
+                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold ${typeColors[place.type] || 'bg-gray-100 text-gray-800'} whitespace-nowrap mb-2">
                     ${typeLabels[place.type] || place.type}
                 </span>
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors duration-300 line-clamp-2">
+                    ${place.name}
+                </h3>
             </div>
             
             <div class="flex items-center gap-2 mb-4">
