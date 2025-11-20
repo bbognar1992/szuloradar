@@ -1163,29 +1163,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    if (myAccount) {
-        myAccount.addEventListener('click', (e) => {
-            e.preventDefault();
-            const myAccountModal = document.getElementById('myAccountModal');
-            if (myAccountModal) {
-                myAccountModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            closeHamburgerMenu();
-        });
-    }
-    
     // My Account Modal kezelés
     const myAccountModal = document.getElementById('myAccountModal');
+    const myAccountBackdrop = document.getElementById('myAccountBackdrop');
     const closeMyAccountModal = document.getElementById('closeMyAccountModal');
     const cancelMyAccount = document.getElementById('cancelMyAccount');
     const myAccountForm = document.getElementById('myAccountForm');
     
-    function closeMyAccountModalFunc() {
+    function openMyAccountModal() {
         if (myAccountModal) {
-            myAccountModal.classList.remove('active');
-            document.body.style.overflow = '';
+            myAccountModal.classList.remove('hidden');
+            myAccountModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize animation state
+            const content = document.getElementById('myAccountContent');
+            if (content) {
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+            }
+            if (myAccountBackdrop) {
+                myAccountBackdrop.classList.remove('opacity-100');
+                myAccountBackdrop.classList.add('opacity-0');
+            }
+            
+            // Trigger animation
+            setTimeout(() => {
+                if (content) {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }
+                if (myAccountBackdrop) {
+                    myAccountBackdrop.classList.remove('opacity-0');
+                    myAccountBackdrop.classList.add('opacity-100');
+                }
+            }, 10);
         }
+    }
+    
+    function closeMyAccountModalFunc() {
+        const content = document.getElementById('myAccountContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (myAccountBackdrop) {
+            myAccountBackdrop.classList.remove('opacity-100');
+            myAccountBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            if (myAccountModal) {
+                myAccountModal.classList.add('hidden');
+                myAccountModal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        }, 200);
+    }
+    
+    if (myAccount) {
+        myAccount.addEventListener('click', (e) => {
+            e.preventDefault();
+            openMyAccountModal();
+            closeHamburgerMenu();
+        });
     }
     
     if (closeMyAccountModal) {
@@ -1199,7 +1240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal bezárása háttérre kattintva
     if (myAccountModal) {
         myAccountModal.addEventListener('click', (e) => {
-            if (e.target === myAccountModal) {
+            if (e.target === myAccountModal || e.target === myAccountBackdrop) {
                 closeMyAccountModalFunc();
             }
         });
@@ -1207,7 +1248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && myAccountModal && myAccountModal.classList.contains('active')) {
+        if (e.key === 'Escape' && myAccountModal && !myAccountModal.classList.contains('hidden')) {
             closeMyAccountModalFunc();
         }
     });
@@ -1240,20 +1281,37 @@ document.addEventListener('DOMContentLoaded', () => {
         
         for (let i = 1; i <= childCount; i++) {
             const childDiv = document.createElement('div');
-            childDiv.className = 'child-field-group';
+            childDiv.className = 'p-4 bg-[#FFF9F3] border border-[#E8DDD0] rounded-xl';
             childDiv.innerHTML = `
-                <h4>${i}. gyerek</h4>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="childName${i}">Név</label>
-                        <input type="text" id="childName${i}" name="childName${i}" placeholder="Gyerek neve">
+                <h4 class="text-lg font-semibold text-teal-600 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    ${i}. gyerek
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="childName${i}" class="block text-sm font-semibold text-gray-700 mb-2">Név</label>
+                        <input 
+                            type="text" 
+                            id="childName${i}" 
+                            name="childName${i}" 
+                            placeholder="Gyerek neve"
+                            class="w-full px-4 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                        >
                     </div>
-                    <div class="form-group">
-                        <label for="childBirthYear${i}">Születési év</label>
-                        <input type="number" id="childBirthYear${i}" name="childBirthYear${i}" 
-                               min="2000" max="${new Date().getFullYear()}" 
-                               placeholder="${new Date().getFullYear()}" 
-                               value="${new Date().getFullYear()}">
+                    <div>
+                        <label for="childBirthYear${i}" class="block text-sm font-semibold text-gray-700 mb-2">Születési év</label>
+                        <input 
+                            type="number" 
+                            id="childBirthYear${i}" 
+                            name="childBirthYear${i}" 
+                            min="2000" 
+                            max="${new Date().getFullYear()}" 
+                            placeholder="${new Date().getFullYear()}" 
+                            value="${new Date().getFullYear()}"
+                            class="w-full px-4 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                        >
                     </div>
                 </div>
             `;
