@@ -1305,7 +1305,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitRecommendationModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
-            closeHamburgerMenu();
         });
     }
     
