@@ -12,9 +12,13 @@ app = FastAPI(
 )
 
 # CORS middleware
+# Get CORS origins and ensure localhost:3001 is included for Next.js dev server
+cors_origins = settings.get_cors_origins()
+if "http://localhost:3001" not in cors_origins:
+    cors_origins.append("http://localhost:3001")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
