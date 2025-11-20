@@ -57,9 +57,11 @@ clean-old: ## Stop services and remove volumes (for older Docker Compose V1)
 	docker-compose -f docker-compose.dev.yml down -v
 
 dev: ## Start in development mode with hot reload
+	docker compose -f docker-compose.dev.yml build --no-cache frontend
 	docker compose -f docker-compose.dev.yml up -d
 
 dev-old: ## Start in development mode with hot reload (for older Docker Compose V1)
+	docker-compose -f docker-compose.dev.yml build --no-cache frontend
 	docker-compose -f docker-compose.dev.yml up -d
 
 dev-logs: ## View development logs
