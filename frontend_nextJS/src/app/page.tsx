@@ -1,13 +1,23 @@
 'use client';
 
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlaces } from '@/hooks/usePlaces';
-import Header from '@/components/Header';
-import PlaceList from '@/components/PlaceList';
+import Header from '@/components/layout/Header';
+import PlaceList from '@/components/places/PlaceList';
+import SearchAndFilters from '@/components/search/SearchAndFilters';
+import Footer from '@/components/layout/Footer';
 
 export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
-  const { places, loading, error } = usePlaces({ page: 1, page_size: 20 });
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  const { places, loading, error } = usePlaces({
+    page: 1,
+    page_size: 20,
+    search: search || undefined,
+    type_key: typeFilter,
+  });
 
   if (authLoading) {
     return (
@@ -18,15 +28,23 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto py-12 px-4">
+    <>
+      <div className="container">
         <Header user={user} onLogout={logout} />
+        
+        <SearchAndFilters
+          search={search}
+          onSearchChange={setSearch}
+          activeFilter={typeFilter || 'all'}
+          onFilterChange={(filter) => setTypeFilter(filter === 'all' ? undefined : filter)}
+        />
 
-        <div className="bg-white rounded-lg shadow p-8">
-          <h2 className="text-2xl font-bold mb-6">Places</h2>
+        <main className="main">
           <PlaceList places={places} loading={loading} error={error} />
-        </div>
+        </main>
       </div>
-    </div>
+
+      <Footer />
+    </>
   );
 }

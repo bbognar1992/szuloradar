@@ -1,0 +1,94 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import type { User } from '@/types/auth';
+
+interface HeaderProps {
+  user: User | null;
+  onLogout: () => void;
+}
+
+export default function Header({ user, onLogout }: HeaderProps) {
+  const [hamburgerOpen, setHamburgerOpen] = useState(false);
+
+  return (
+    <header className="main-header">
+      <h1>Fedezd fel a gyerekbarát helyeket</h1>
+      <div className="header-right">
+        {!user ? (
+          <div className="user-profile" id="loginTrigger">
+            <div className="profile-info">
+              <Link href="/login" className="profile-name">
+                Bejelentkezés
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="header-right-buttons">
+            <button className="my-lists-button">
+              <span>📋</span>
+              <span>Listám</span>
+            </button>
+            <div className="user-profile hamburger-menu">
+              <button
+                className={`hamburger-button ${hamburgerOpen ? 'active' : ''}`}
+                onClick={() => setHamburgerOpen(!hamburgerOpen)}
+                aria-label="Menü"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+              {hamburgerOpen && (
+                <div className="hamburger-menu-dropdown active">
+                  <nav className="hamburger-nav">
+                    <a href="#" className="hamburger-menu-item">
+                      <Image
+                        src="/assets/account.png"
+                        alt="Fiókom"
+                        className="menu-icon"
+                        width={24}
+                        height={24}
+                      />
+                      <span>Fiókom</span>
+                    </a>
+                    <a href="#" className="hamburger-menu-item">
+                      <Image
+                        src="/assets/recommend.png"
+                        alt="Ajánlás beküldése"
+                        className="menu-icon"
+                        width={24}
+                        height={24}
+                      />
+                      <span>Ajánlás beküldése</span>
+                    </a>
+                    <a
+                      href="#"
+                      className="hamburger-menu-item hamburger-menu-item-logout"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onLogout();
+                        setHamburgerOpen(false);
+                      }}
+                    >
+                      <Image
+                        src="/assets/logout.png"
+                        alt="Kijelentkezés"
+                        className="menu-icon"
+                        width={24}
+                        height={24}
+                      />
+                      <span>Kijelentkezés</span>
+                    </a>
+                  </nav>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
