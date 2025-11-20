@@ -1396,9 +1396,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Listám/Összes gomb kezelés - mentett helyek vagy összes rekord megjelenítése
+    // Felvédzés és Listám gombok kezelése
+    const showAllButton = document.getElementById('showAllButton');
     const myListsButton = document.getElementById('myListsButton');
-    const myListsButtonText = myListsButton ? myListsButton.querySelector('span:last-child') : null;
+    
+    // Alapértelmezett állapot: Felvédzés gomb aktív
+    if (showAllButton) {
+        showAllButton.classList.add('active');
+    }
     
     function showAllPlaces() {
         // Összes rekord megjelenítése
@@ -1410,10 +1415,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         displayPlaces(mockPlaces, true);
         
-        // Gomb szövegének visszaállítása "Listám"-ra
-        if (myListsButtonText) {
-            myListsButtonText.textContent = 'Listám';
-            myListsButton.querySelector('span:first-child').textContent = '📋';
+        // Aktív állapot beállítása
+        if (showAllButton) {
+            showAllButton.classList.add('active');
+        }
+        if (myListsButton) {
+            myListsButton.classList.remove('active');
         }
     }
     
@@ -1438,24 +1445,28 @@ document.addEventListener('DOMContentLoaded', () => {
         
         displayPlaces(placesToDisplay, true);
         
-        // Gomb szövegének módosítása "Összes"-re
-        if (myListsButtonText) {
-            myListsButtonText.textContent = 'Összes';
-            myListsButton.querySelector('span:first-child').textContent = '🌐';
+        // Aktív állapot beállítása
+        if (showAllButton) {
+            showAllButton.classList.remove('active');
+        }
+        if (myListsButton) {
+            myListsButton.classList.add('active');
         }
     }
     
+    // Felvédzés gomb (Összes helyek megjelenítése)
+    if (showAllButton) {
+        showAllButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            showAllPlaces();
+        });
+    }
+    
+    // Listám gomb (Mentett helyek megjelenítése)
     if (myListsButton) {
         myListsButton.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Ha "Listám" állapotban van, akkor mentett helyeket mutatunk
-            // Ha "Összes" állapotban van, akkor összes rekordot mutatunk
-            if (myListsButtonText && myListsButtonText.textContent === 'Listám') {
-                showSavedPlaces();
-            } else {
-                showAllPlaces();
-            }
+            showSavedPlaces();
         });
     }
     

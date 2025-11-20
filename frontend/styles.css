@@ -385,6 +385,11 @@ body {
     box-shadow: var(--shadow-md);
   }
 
+.my-lists-button.active {
+    background: var(--color-primary-hover);
+    box-shadow: var(--shadow-md);
+  }
+
 .my-lists-button span:first-child {
     font-size: 1.1rem;
   }
