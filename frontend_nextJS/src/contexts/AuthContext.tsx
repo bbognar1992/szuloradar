@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on mount
+    // Check if user is logged
     const token = localStorage.getItem('auth_token');
     if (token) {
       getCurrentUser()
