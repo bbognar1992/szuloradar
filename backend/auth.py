@@ -5,7 +5,7 @@ import logging
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.security import HTTPBasic, HTTPBasicCredentials, HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from config import settings
 from database import get_db
@@ -16,6 +16,9 @@ logging.getLogger("passlib.handlers.bcrypt").setLevel(logging.ERROR)
 
 # Simple HTTP Basic Authentication scheme
 security = HTTPBasic()
+
+# JWT Bearer token authentication scheme
+bearer_scheme = HTTPBearer(auto_error=False)
 
 # Lazy initialization of CryptContext to avoid module-level initialization issues
 # Passlib's internal bug detection may fail with long passwords, so we initialize lazily
@@ -154,6 +157,50 @@ def get_current_active_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
     """Get the current active user"""
+    if not current_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is inactive"
+        )
+    return current_user
+
+
+def get_current_user_from_token(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
+    db: Session = Depends(get_db)
+) -> User:
+    """Get the current authenticated user from JWT Bearer token"""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    if credentials is None:
+        raise credentials_exception
+    
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except JWTError as e:
+        # Log the error for debugging
+        logging.error(f"JWT validation error: {str(e)}")
+        raise credentials_exception
+    
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+        raise credentials_exception
+    
+    return user
+
+
+def get_current_active_user_from_token(
+    current_user: User = Depends(get_current_user_from_token)
+) -> User:
+    """Get the current active user from JWT Bearer token"""
     if not current_user.is_active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
