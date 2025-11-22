@@ -22,27 +22,27 @@ depends_on: Union[str, Sequence[str], None] = None
 MUSEUM_RECOMMENDATION_ID = '11111111-1111-1111-1111-111111111111'
 LIBRARY_RECOMMENDATION_ID = '22222222-2222-2222-2222-222222222222'
 
-# Amenity IDs from previous migration
-STROLLER_FRIENDLY_AMENITY_ID = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
-PARKING_AMENITY_ID = 'ffffffff-ffff-ffff-ffff-ffffffffffff'
+# Amenity IDs (integers from amenities migration)
+STROLLER_FRIENDLY_AMENITY_ID = 4  # babakocsi_kompatibilis
+PARKING_AMENITY_ID = 1  # placeholder (parking not in new schema)
 
 
 def upgrade() -> None:
     recommendation_amenities_table = sa.table(
         'recommendation_amenities',
         sa.column('recommendation_id', sa.UUID()),
-        sa.column('amenity_id', sa.UUID()),
+        sa.column('amenity_id', sa.Integer()),
     )
     
     op.bulk_insert(
         recommendation_amenities_table,
         [
             # Children's Museum amenities
-            {'recommendation_id': uuid.UUID(MUSEUM_RECOMMENDATION_ID), 'amenity_id': uuid.UUID(STROLLER_FRIENDLY_AMENITY_ID)},
-            {'recommendation_id': uuid.UUID(MUSEUM_RECOMMENDATION_ID), 'amenity_id': uuid.UUID(PARKING_AMENITY_ID)},
+            {'recommendation_id': uuid.UUID(MUSEUM_RECOMMENDATION_ID), 'amenity_id': STROLLER_FRIENDLY_AMENITY_ID},
+            {'recommendation_id': uuid.UUID(MUSEUM_RECOMMENDATION_ID), 'amenity_id': PARKING_AMENITY_ID},
             # Public Library amenities
-            {'recommendation_id': uuid.UUID(LIBRARY_RECOMMENDATION_ID), 'amenity_id': uuid.UUID(STROLLER_FRIENDLY_AMENITY_ID)},
-            {'recommendation_id': uuid.UUID(LIBRARY_RECOMMENDATION_ID), 'amenity_id': uuid.UUID(PARKING_AMENITY_ID)},
+            {'recommendation_id': uuid.UUID(LIBRARY_RECOMMENDATION_ID), 'amenity_id': STROLLER_FRIENDLY_AMENITY_ID},
+            {'recommendation_id': uuid.UUID(LIBRARY_RECOMMENDATION_ID), 'amenity_id': PARKING_AMENITY_ID},
         ]
     )
 
