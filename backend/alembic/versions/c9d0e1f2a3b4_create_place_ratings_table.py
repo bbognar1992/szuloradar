@@ -23,12 +23,17 @@ depends_on: Union[str, Sequence[str], None] = None
 # Test user ID from previous migration
 TEST_USER_ID = "550e8400-e29b-41d4-a716-446655440000"
 
-# Place IDs from previous migration
-PLAYGROUND_PLACE_ID = '11111111-1111-1111-1111-111111111111'
-RESTAURANT_PLACE_ID = '33333333-3333-3333-3333-333333333333'
+# Place IDs from previous migration (using new restaurant place IDs)
+RESTAURANT_PLACE_ID_1 = '00000000-0000-0000-0000-000000000001'  # LAMAREDA Étterem
+RESTAURANT_PLACE_ID_2 = '00000000-0000-0000-0000-000000000003'  # Palffy Restaurant
 
 
 def upgrade() -> None:
+    # Remove any existing place_ratings that reference old place IDs
+    op.execute(
+        sa.text("DELETE FROM place_ratings WHERE place_id IN ('11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333')")
+    )
+    
     place_ratings_table = sa.table(
         'place_ratings',
         sa.column('id', sa.UUID()),
@@ -46,17 +51,17 @@ def upgrade() -> None:
             {
                 'id': uuid.UUID('11111111-1111-1111-1111-111111111111'),
                 'user_id': uuid.UUID(TEST_USER_ID),
-                'place_id': uuid.UUID(PLAYGROUND_PLACE_ID),
-                'rating': Decimal('4.5'),
-                'review_text': 'Great playground! My kids love it here. Very safe and well-maintained.',
+                'place_id': uuid.UUID(RESTAURANT_PLACE_ID_1),
+                'rating': Decimal('4.7'),
+                'review_text': 'Excellent restaurant! Great food and very accommodating for families with children.',
                 'created_at': datetime.utcnow(),
                 'updated_at': datetime.utcnow(),
             },
             {
                 'id': uuid.UUID('22222222-2222-2222-2222-222222222222'),
                 'user_id': uuid.UUID(TEST_USER_ID),
-                'place_id': uuid.UUID(RESTAURANT_PLACE_ID),
-                'rating': Decimal('4.0'),
+                'place_id': uuid.UUID(RESTAURANT_PLACE_ID_2),
+                'rating': Decimal('4.3'),
                 'review_text': 'Good food and very accommodating for families with children.',
                 'created_at': datetime.utcnow(),
                 'updated_at': datetime.utcnow(),

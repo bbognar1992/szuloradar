@@ -6,7 +6,7 @@ from decimal import Decimal
 
 
 class PlaceTypeResponse(BaseModel):
-    id: UUID
+    id: int
     type_key: str
     display_name: str
     icon: Optional[str] = None
@@ -16,7 +16,7 @@ class PlaceTypeResponse(BaseModel):
 
 
 class AmenityResponse(BaseModel):
-    id: UUID
+    id: int
     amenity_key: str
     display_name: str
     icon: Optional[str] = None

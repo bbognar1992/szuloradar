@@ -11,14 +11,14 @@ place_amenities = Table(
     "place_amenities",
     Base.metadata,
     Column("place_id", UUID(as_uuid=True), ForeignKey("places.id", ondelete="CASCADE"), primary_key=True),
-    Column("amenity_id", UUID(as_uuid=True), ForeignKey("amenities.id", ondelete="CASCADE"), primary_key=True),
+    Column("amenity_id", Integer, ForeignKey("amenities.id", ondelete="CASCADE"), primary_key=True),
 )
 
 
 class PlaceType(Base):
     __tablename__ = "place_types"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     type_key = Column(String(50), unique=True, nullable=False)
     display_name = Column(String(100), nullable=False)
     icon = Column(String(10))
@@ -34,7 +34,7 @@ class Place(Base):
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
-    type_id = Column(UUID(as_uuid=True), ForeignKey("place_types.id"), nullable=False, index=True)
+    type_id = Column(Integer, ForeignKey("place_types.id"), nullable=False, index=True)
     rating = Column(Numeric(3, 2), default=0.0, nullable=False)
     address = Column(Text, nullable=False)
     phone = Column(String(20))
@@ -62,7 +62,7 @@ class Place(Base):
 class Amenity(Base):
     __tablename__ = "amenities"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     amenity_key = Column(String(50), unique=True, nullable=False)
     display_name = Column(String(100), nullable=False)
     icon = Column(String(10))
@@ -77,6 +77,6 @@ recommendation_amenities = Table(
     "recommendation_amenities",
     Base.metadata,
     Column("recommendation_id", UUID(as_uuid=True), ForeignKey("recommendations.id", ondelete="CASCADE"), primary_key=True),
-    Column("amenity_id", UUID(as_uuid=True), ForeignKey("amenities.id", ondelete="CASCADE"), primary_key=True),
+    Column("amenity_id", Integer, ForeignKey("amenities.id", ondelete="CASCADE"), primary_key=True),
 )
 
