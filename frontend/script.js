@@ -342,7 +342,7 @@ function getRandomPlaces(count = 4) {
 // Helyszín kártya generálása
 function createPlaceCard(place) {
     const card = document.createElement('div');
-    card.className = 'place-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden group hover:-translate-y-1';
+    card.className = 'place-card bg-[#FFFBF7] rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-[#E8DDD0] overflow-hidden group hover:-translate-y-1';
     card.setAttribute('data-place-id', mockPlaces.indexOf(place));
     
     const typeLabels = {
@@ -377,13 +377,13 @@ function createPlaceCard(place) {
     
     card.innerHTML = `
         <div class="p-6">
-            <div class="flex items-start justify-between mb-3">
-                <h3 class="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors duration-300 line-clamp-2 flex-1 pr-2">
-                    ${place.name}
-                </h3>
-                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold ${typeColors[place.type] || 'bg-gray-100 text-gray-800'} whitespace-nowrap flex-shrink-0">
+            <div class="mb-3">
+                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold ${typeColors[place.type] || 'bg-gray-100 text-gray-800'} whitespace-nowrap mb-2">
                     ${typeLabels[place.type] || place.type}
                 </span>
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors duration-300 line-clamp-2">
+                    ${place.name}
+                </h3>
             </div>
             
             <div class="flex items-center gap-2 mb-4">
@@ -403,9 +403,9 @@ function createPlaceCard(place) {
                 </div>
                 
                 ${place.amenities && place.amenities.length > 0 ? `
-                <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
+                <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-[#E8DDD0]">
                     ${place.amenities.slice(0, 3).map(amenity => `
-                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
+                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-[#FFF9F3] text-gray-700 border border-[#E8DDD0]">
                             ${amenity}
                         </span>
                     `).join('')}
@@ -416,7 +416,7 @@ function createPlaceCard(place) {
                 ` : ''}
             </div>
             
-            <div class="mt-4 pt-4 border-t border-gray-100">
+            <div class="mt-4 pt-4 border-t border-[#E8DDD0]">
                 <div class="flex items-center justify-between">
                     <span class="text-xs text-gray-500">Részletek megtekintése</span>
                     <svg class="w-5 h-5 text-teal-500 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,7 +439,10 @@ function createPlaceCard(place) {
 function showPlaceDetail(place) {
     const modal = document.getElementById('placeDetailModal');
     const header = document.getElementById('placeDetailHeader');
-    const body = document.getElementById('placeDetailBody');
+    const infoContent = document.getElementById('placeDetailTabInfoContent');
+    const recommendationsContent = document.getElementById('placeDetailTabRecommendationsContent');
+    const tabInfo = document.getElementById('placeDetailTabInfo');
+    const tabRecommendations = document.getElementById('placeDetailTabRecommendations');
     
     const typeLabels = {
         'kávézó': '☕ Kávézó',
@@ -449,71 +452,291 @@ function showPlaceDetail(place) {
         'szállás': '🏨 Szállás'
     };
     
+    const typeColors = {
+        'kávézó': 'bg-amber-100 text-amber-800 border-amber-200',
+        'játszóház': 'bg-purple-100 text-purple-800 border-purple-200',
+        'étterem': 'bg-orange-100 text-orange-800 border-orange-200',
+        'konditerem': 'bg-blue-100 text-blue-800 border-blue-200',
+        'szállás': 'bg-green-100 text-green-800 border-green-200'
+    };
+    
+    // Generate star rating
+    const fullStars = Math.floor(place.rating);
+    const hasHalfStar = place.rating % 1 >= 0.5;
+    let starsHTML = '';
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<span class="text-yellow-400 text-2xl">⭐</span>';
+    }
+    if (hasHalfStar && fullStars < 5) {
+        starsHTML += '<span class="text-yellow-400 text-2xl">⭐</span>';
+    }
+    for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
+        starsHTML += '<span class="text-gray-300 text-2xl">⭐</span>';
+    }
+    
     header.innerHTML = `
-        <div class="place-detail-title">
-            <h2>${place.name}</h2>
-            <span class="place-detail-type">${typeLabels[place.type] || place.type}</span>
-        </div>
-        <div class="place-detail-rating">
-            <span class="rating-big">${place.rating}</span>
-            <span class="rating-stars">${'⭐'.repeat(Math.round(place.rating))}</span>
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div class="flex-1">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">${place.name}</h2>
+                <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border ${typeColors[place.type] || 'bg-gray-100 text-gray-800 border-gray-200'}">
+                    ${typeLabels[place.type] || place.type}
+                </span>
+            </div>
+            <div class="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl px-5 py-4 shadow-sm">
+                <span class="text-4xl font-bold text-orange-500">${place.rating}</span>
+                <div class="flex items-center gap-1">
+                    ${starsHTML}
+                </div>
+            </div>
         </div>
     `;
     
-    body.innerHTML = `
-        <div class="place-detail-section">
-            <h3>📍 Cím</h3>
-            <p>${place.address}</p>
-            <a href="https://maps.google.com/?q=${encodeURIComponent(place.address)}" target="_blank" class="map-link">
-                Megnyitás térképen
-            </a>
+    // Mock ajánlások (később backend-ből jönnek)
+    const mockRecommendations = [
+        {
+            author: 'Kovács Anna',
+            rating: 5,
+            text: 'Fantasztikus hely! A gyerekek imádják a játszóteret, és a kávé is kiváló. Mindenkinek ajánlom!',
+            date: '2024. január 15.'
+        },
+        {
+            author: 'Nagy Péter',
+            rating: 4,
+            text: 'Nagyon barátságos hely, jó ár-érték arány. A személyzet segítőkész volt.',
+            date: '2024. január 10.'
+        },
+        {
+            author: 'Szabó Mária',
+            rating: 5,
+            text: 'Családbarát környezet, tiszta, rendezett. A gyerekek biztonságban érezték magukat.',
+            date: '2024. január 5.'
+        }
+    ];
+    
+    infoContent.innerHTML = `
+        <!-- Address Section -->
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">📍 Cím</h3>
+                    <p class="text-gray-700 mb-4">${place.address}</p>
+                    <a 
+                        href="https://maps.google.com/?q=${encodeURIComponent(place.address)}" 
+                        target="_blank" 
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                        Megnyitás térképen
+                    </a>
+                </div>
+            </div>
         </div>
         
         ${place.phone ? `
-        <div class="place-detail-section">
-            <h3>📞 Telefon</h3>
-            <p><a href="tel:${place.phone.replace(/\s/g, '')}">${place.phone}</a></p>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">📞 Telefon</h3>
+                    <a href="tel:${place.phone.replace(/\s/g, '')}" class="text-teal-600 hover:text-teal-700 font-medium text-lg transition-colors">
+                        ${place.phone}
+                    </a>
+                </div>
+            </div>
         </div>
         ` : ''}
         
         ${place.hours ? `
-        <div class="place-detail-section">
-            <h3>🕐 Nyitvatartás</h3>
-            <p>${place.hours}</p>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">🕐 Nyitvatartás</h3>
+                    <p class="text-gray-700">${place.hours}</p>
+                </div>
+            </div>
         </div>
         ` : ''}
         
         ${place.description ? `
-        <div class="place-detail-section">
-            <h3>📝 Leírás</h3>
-            <p>${place.description}</p>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">📝 Leírás</h3>
+                    <p class="text-gray-700 leading-relaxed">${place.description}</p>
+                </div>
+            </div>
         </div>
         ` : ''}
         
         ${place.amenities && place.amenities.length > 0 ? `
-        <div class="place-detail-section">
-            <h3>✨ Szolgáltatások</h3>
-            <ul class="amenities-list">
-                ${place.amenities.map(amenity => `<li>${amenity}</li>`).join('')}
-            </ul>
+        <div class="mb-8 pb-8 border-b border-[#E8DDD0]">
+            <div class="flex items-start gap-3 mb-4">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">✨ Szolgáltatások</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        ${place.amenities.map(amenity => `
+                            <div class="flex items-center gap-2 px-4 py-3 bg-[#FFF9F3] border border-[#E8DDD0] rounded-lg hover:border-teal-300 hover:bg-teal-50/50 transition-all duration-200">
+                                <span class="text-teal-500">✓</span>
+                                <span class="text-gray-700 text-sm font-medium">${amenity}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
         </div>
         ` : ''}
         
-        <div class="place-detail-actions">
+        <!-- Action Button -->
+        <div class="pt-6">
             ${isPlaceSaved(place.name, place.address) ? `
-                <button class="remove-from-list-button" onclick="removeFromList('${place.name}', '${place.address}')">
-                    🗑️ Törlés a listából
+                <button 
+                    onclick="removeFromList('${place.name}', '${place.address}')"
+                    class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Törlés a listából
                 </button>
             ` : `
-                <button class="add-to-list-button" onclick="addToList('${place.name}', '${place.address}', '${place.type}', ${place.rating})">
-                    ➕ Listához adás
+                <button 
+                    onclick="addToList('${place.name}', '${place.address}', '${place.type}', ${place.rating})"
+                    class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Listához adás
                 </button>
             `}
         </div>
     `;
     
-    modal.classList.add('active');
+    // Ajánlások tab tartalma
+    recommendationsContent.innerHTML = `
+        <div class="space-y-6">
+            ${mockRecommendations.length > 0 ? mockRecommendations.map(rec => {
+                const starsHTML = Array(5).fill(0).map((_, i) => 
+                    i < rec.rating 
+                        ? '<span class="text-yellow-400 text-lg">⭐</span>' 
+                        : '<span class="text-gray-300 text-lg">⭐</span>'
+                ).join('');
+                
+                return `
+                    <div class="bg-white border border-[#E8DDD0] rounded-xl p-6 hover:shadow-md transition-all duration-200">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-1">${rec.author}</h4>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="flex items-center gap-1">
+                                        ${starsHTML}
+                                    </div>
+                                    <span class="text-sm text-gray-500">${rec.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed">${rec.text}</p>
+                    </div>
+                `;
+            }).join('') : `
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Még nincsenek ajánlások</h3>
+                    <p class="text-gray-600">Legyél te az első, aki ajánlást ír erről a helyről!</p>
+                </div>
+            `}
+        </div>
+    `;
+    
+    // Tab váltás kezelés
+    function switchTab(tabName) {
+        if (tabName === 'info') {
+            infoContent.classList.remove('hidden');
+            recommendationsContent.classList.add('hidden');
+            tabInfo.classList.add('border-teal-500', 'text-gray-700');
+            tabInfo.classList.remove('border-transparent', 'text-gray-500');
+            tabRecommendations.classList.remove('border-teal-500', 'text-gray-700');
+            tabRecommendations.classList.add('border-transparent', 'text-gray-500');
+        } else {
+            infoContent.classList.add('hidden');
+            recommendationsContent.classList.remove('hidden');
+            tabRecommendations.classList.add('border-teal-500', 'text-gray-700');
+            tabRecommendations.classList.remove('border-transparent', 'text-gray-500');
+            tabInfo.classList.remove('border-teal-500', 'text-gray-700');
+            tabInfo.classList.add('border-transparent', 'text-gray-500');
+        }
+    }
+    
+    // Tab event listeners
+    if (tabInfo) {
+        tabInfo.onclick = () => switchTab('info');
+    }
+    if (tabRecommendations) {
+        tabRecommendations.onclick = () => switchTab('recommendations');
+    }
+    
+    // Alapértelmezett tab: Info
+    switchTab('info');
+    
+    // Show modal with animation
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
     document.body.style.overflow = 'hidden';
+    
+    // Initialize animation state
+    const content = document.getElementById('placeDetailContent');
+    const backdrop = document.getElementById('placeDetailBackdrop');
+    if (content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+    }
+    if (backdrop) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+    }
+    
+    // Trigger animation
+    setTimeout(() => {
+        if (content) {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }
+        if (backdrop) {
+            backdrop.classList.remove('opacity-0');
+            backdrop.classList.add('opacity-100');
+        }
+    }, 10);
 }
 
 // Listához adás funkció
@@ -880,36 +1103,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginTrigger = document.getElementById('loginTrigger');
     const closeLoginModal = document.getElementById('closeLoginModal');
     const loginForm = document.getElementById('loginForm');
+    const loginModalBackdrop = document.getElementById('loginModalBackdrop');
+    
+    function openLoginModal() {
+        loginModal.classList.remove('hidden');
+        loginModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        
+        // Initialize animation state
+        const content = document.getElementById('loginModalContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (loginModalBackdrop) {
+            loginModalBackdrop.classList.remove('opacity-100');
+            loginModalBackdrop.classList.add('opacity-0');
+        }
+        
+        // Trigger animation
+        setTimeout(() => {
+            if (content) {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }
+            if (loginModalBackdrop) {
+                loginModalBackdrop.classList.remove('opacity-0');
+                loginModalBackdrop.classList.add('opacity-100');
+            }
+        }, 10);
+    }
+    
+    function closeLoginModalFunc() {
+        const content = document.getElementById('loginModalContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (loginModalBackdrop) {
+            loginModalBackdrop.classList.remove('opacity-100');
+            loginModalBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            loginModal.classList.add('hidden');
+            loginModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }, 200);
+    }
     
     // Modal megnyitása
     if (loginTrigger) {
-        loginTrigger.addEventListener('click', () => {
-            loginModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Scroll letiltás háttérben
-        });
+        loginTrigger.addEventListener('click', openLoginModal);
     }
     
     // Modal bezárása X gombbal
     if (closeLoginModal) {
-        closeLoginModal.addEventListener('click', () => {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = ''; // Scroll visszaállítás
-        });
+        closeLoginModal.addEventListener('click', closeLoginModalFunc);
     }
     
     // Modal bezárása háttérre kattintva
-    loginModal.addEventListener('click', (e) => {
-        if (e.target === loginModal) {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
+    if (loginModal) {
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal || e.target === loginModalBackdrop) {
+                closeLoginModalFunc();
+            }
+        });
+    }
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && loginModal.classList.contains('active')) {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = '';
+        if (e.key === 'Escape' && !loginModal.classList.contains('hidden')) {
+            closeLoginModalFunc();
         }
     });
     
@@ -920,8 +1185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Automatikusan elfogadja a bejelentkezést, nincs validáció
             // Modal bezárása és scroll visszaállítás
-            loginModal.classList.remove('active');
-            document.body.style.overflow = '';
+            closeLoginModalFunc();
             
             // Bejelentkezés gomb elrejtése, hamburger menü és listám gomb megjelenítése
             const loginTrigger = document.getElementById('loginTrigger');
@@ -994,29 +1258,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    if (myAccount) {
-        myAccount.addEventListener('click', (e) => {
-            e.preventDefault();
-            const myAccountModal = document.getElementById('myAccountModal');
-            if (myAccountModal) {
-                myAccountModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            closeHamburgerMenu();
-        });
-    }
-    
     // My Account Modal kezelés
     const myAccountModal = document.getElementById('myAccountModal');
+    const myAccountBackdrop = document.getElementById('myAccountBackdrop');
     const closeMyAccountModal = document.getElementById('closeMyAccountModal');
     const cancelMyAccount = document.getElementById('cancelMyAccount');
     const myAccountForm = document.getElementById('myAccountForm');
     
-    function closeMyAccountModalFunc() {
+    function openMyAccountModal() {
         if (myAccountModal) {
-            myAccountModal.classList.remove('active');
-            document.body.style.overflow = '';
+            myAccountModal.classList.remove('hidden');
+            myAccountModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize animation state
+            const content = document.getElementById('myAccountContent');
+            if (content) {
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+            }
+            if (myAccountBackdrop) {
+                myAccountBackdrop.classList.remove('opacity-100');
+                myAccountBackdrop.classList.add('opacity-0');
+            }
+            
+            // Trigger animation
+            setTimeout(() => {
+                if (content) {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }
+                if (myAccountBackdrop) {
+                    myAccountBackdrop.classList.remove('opacity-0');
+                    myAccountBackdrop.classList.add('opacity-100');
+                }
+            }, 10);
         }
+    }
+    
+    function closeMyAccountModalFunc() {
+        const content = document.getElementById('myAccountContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (myAccountBackdrop) {
+            myAccountBackdrop.classList.remove('opacity-100');
+            myAccountBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            if (myAccountModal) {
+                myAccountModal.classList.add('hidden');
+                myAccountModal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        }, 200);
+    }
+    
+    if (myAccount) {
+        myAccount.addEventListener('click', (e) => {
+            e.preventDefault();
+            openMyAccountModal();
+            closeHamburgerMenu();
+        });
     }
     
     if (closeMyAccountModal) {
@@ -1030,7 +1335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal bezárása háttérre kattintva
     if (myAccountModal) {
         myAccountModal.addEventListener('click', (e) => {
-            if (e.target === myAccountModal) {
+            if (e.target === myAccountModal || e.target === myAccountBackdrop) {
                 closeMyAccountModalFunc();
             }
         });
@@ -1038,7 +1343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && myAccountModal && myAccountModal.classList.contains('active')) {
+        if (e.key === 'Escape' && myAccountModal && !myAccountModal.classList.contains('hidden')) {
             closeMyAccountModalFunc();
         }
     });
@@ -1071,20 +1376,37 @@ document.addEventListener('DOMContentLoaded', () => {
         
         for (let i = 1; i <= childCount; i++) {
             const childDiv = document.createElement('div');
-            childDiv.className = 'child-field-group';
+            childDiv.className = 'p-4 bg-[#FFF9F3] border border-[#E8DDD0] rounded-xl';
             childDiv.innerHTML = `
-                <h4>${i}. gyerek</h4>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="childName${i}">Név</label>
-                        <input type="text" id="childName${i}" name="childName${i}" placeholder="Gyerek neve">
+                <h4 class="text-lg font-semibold text-teal-600 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    ${i}. gyerek
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="childName${i}" class="block text-sm font-semibold text-gray-700 mb-2">Név</label>
+                        <input 
+                            type="text" 
+                            id="childName${i}" 
+                            name="childName${i}" 
+                            placeholder="Gyerek neve"
+                            class="w-full px-4 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                        >
                     </div>
-                    <div class="form-group">
-                        <label for="childBirthYear${i}">Születési év</label>
-                        <input type="number" id="childBirthYear${i}" name="childBirthYear${i}" 
-                               min="2000" max="${new Date().getFullYear()}" 
-                               placeholder="${new Date().getFullYear()}" 
-                               value="${new Date().getFullYear()}">
+                    <div>
+                        <label for="childBirthYear${i}" class="block text-sm font-semibold text-gray-700 mb-2">Születési év</label>
+                        <input 
+                            type="number" 
+                            id="childBirthYear${i}" 
+                            name="childBirthYear${i}" 
+                            min="2000" 
+                            max="${new Date().getFullYear()}" 
+                            placeholder="${new Date().getFullYear()}" 
+                            value="${new Date().getFullYear()}"
+                            class="w-full px-4 py-3 bg-white border border-[#E8DDD0] rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                        >
                     </div>
                 </div>
             `;
@@ -1128,29 +1450,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    if (submitRecommendation) {
-        submitRecommendation.addEventListener('click', (e) => {
-            e.preventDefault();
-            const submitRecommendationModal = document.getElementById('submitRecommendationModal');
-            if (submitRecommendationModal) {
-                submitRecommendationModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            closeHamburgerMenu();
-        });
-    }
-    
     // Submit Recommendation Modal kezelés
     const submitRecommendationModal = document.getElementById('submitRecommendationModal');
+    const submitRecommendationBackdrop = document.getElementById('submitRecommendationBackdrop');
     const closeSubmitRecommendationModal = document.getElementById('closeSubmitRecommendationModal');
     const cancelSubmitRecommendation = document.getElementById('cancelSubmitRecommendation');
     const submitRecommendationForm = document.getElementById('submitRecommendationForm');
     
-    function closeSubmitRecommendationModalFunc() {
+    function openSubmitRecommendationModal() {
         if (submitRecommendationModal) {
-            submitRecommendationModal.classList.remove('active');
-            document.body.style.overflow = '';
+            submitRecommendationModal.classList.remove('hidden');
+            submitRecommendationModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize animation state
+            const content = document.getElementById('submitRecommendationContent');
+            if (content) {
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+            }
+            if (submitRecommendationBackdrop) {
+                submitRecommendationBackdrop.classList.remove('opacity-100');
+                submitRecommendationBackdrop.classList.add('opacity-0');
+            }
+            
+            // Trigger animation
+            setTimeout(() => {
+                if (content) {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }
+                if (submitRecommendationBackdrop) {
+                    submitRecommendationBackdrop.classList.remove('opacity-0');
+                    submitRecommendationBackdrop.classList.add('opacity-100');
+                }
+            }, 10);
         }
+    }
+    
+    function closeSubmitRecommendationModalFunc() {
+        const content = document.getElementById('submitRecommendationContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (submitRecommendationBackdrop) {
+            submitRecommendationBackdrop.classList.remove('opacity-100');
+            submitRecommendationBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            if (submitRecommendationModal) {
+                submitRecommendationModal.classList.add('hidden');
+                submitRecommendationModal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        }, 200);
+    }
+    
+    if (submitRecommendation) {
+        submitRecommendation.addEventListener('click', (e) => {
+            e.preventDefault();
+            openSubmitRecommendationModal();
+        });
     }
     
     if (closeSubmitRecommendationModal) {
@@ -1164,7 +1526,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal bezárása háttérre kattintva
     if (submitRecommendationModal) {
         submitRecommendationModal.addEventListener('click', (e) => {
-            if (e.target === submitRecommendationModal) {
+            if (e.target === submitRecommendationModal || e.target === submitRecommendationBackdrop) {
                 closeSubmitRecommendationModalFunc();
             }
         });
@@ -1172,7 +1534,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && submitRecommendationModal && submitRecommendationModal.classList.contains('active')) {
+        if (e.key === 'Escape' && submitRecommendationModal && !submitRecommendationModal.classList.contains('hidden')) {
             closeSubmitRecommendationModalFunc();
         }
     });
@@ -1227,9 +1589,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Listám/Összes gomb kezelés - mentett helyek vagy összes rekord megjelenítése
+    // Felvédzés és Listám gombok kezelése
+    const showAllButton = document.getElementById('showAllButton');
     const myListsButton = document.getElementById('myListsButton');
-    const myListsButtonText = myListsButton ? myListsButton.querySelector('span:last-child') : null;
+    
+    // Alapértelmezett állapot: Felvédzés gomb aktív
+    if (showAllButton) {
+        showAllButton.classList.add('active');
+    }
     
     function showAllPlaces() {
         // Összes rekord megjelenítése
@@ -1241,10 +1608,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         displayPlaces(mockPlaces, true);
         
-        // Gomb szövegének visszaállítása "Listám"-ra
-        if (myListsButtonText) {
-            myListsButtonText.textContent = 'Listám';
-            myListsButton.querySelector('span:first-child').textContent = '📋';
+        // Aktív állapot beállítása
+        if (showAllButton) {
+            showAllButton.classList.add('active');
+        }
+        if (myListsButton) {
+            myListsButton.classList.remove('active');
         }
     }
     
@@ -1269,52 +1638,68 @@ document.addEventListener('DOMContentLoaded', () => {
         
         displayPlaces(placesToDisplay, true);
         
-        // Gomb szövegének módosítása "Összes"-re
-        if (myListsButtonText) {
-            myListsButtonText.textContent = 'Összes';
-            myListsButton.querySelector('span:first-child').textContent = '🌐';
+        // Aktív állapot beállítása
+        if (showAllButton) {
+            showAllButton.classList.remove('active');
+        }
+        if (myListsButton) {
+            myListsButton.classList.add('active');
         }
     }
     
+    // Felvédzés gomb (Összes helyek megjelenítése)
+    if (showAllButton) {
+        showAllButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            showAllPlaces();
+        });
+    }
+    
+    // Listám gomb (Mentett helyek megjelenítése)
     if (myListsButton) {
         myListsButton.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Ha "Listám" állapotban van, akkor mentett helyeket mutatunk
-            // Ha "Összes" állapotban van, akkor összes rekordot mutatunk
-            if (myListsButtonText && myListsButtonText.textContent === 'Listám') {
-                showSavedPlaces();
-            } else {
-                showAllPlaces();
-            }
+            showSavedPlaces();
         });
     }
     
     // Place Detail Modal kezelés
     const placeDetailModal = document.getElementById('placeDetailModal');
     const closePlaceDetail = document.getElementById('closePlaceDetail');
+    const placeDetailBackdrop = document.getElementById('placeDetailBackdrop');
+    
+    function closePlaceDetailModal() {
+        const content = document.getElementById('placeDetailContent');
+        if (content) {
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+        }
+        if (placeDetailBackdrop) {
+            placeDetailBackdrop.classList.remove('opacity-100');
+            placeDetailBackdrop.classList.add('opacity-0');
+        }
+        
+        setTimeout(() => {
+            placeDetailModal.classList.add('hidden');
+            placeDetailModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }, 200);
+    }
     
     // Modal bezárása X gombbal
     if (closePlaceDetail) {
-        closePlaceDetail.addEventListener('click', () => {
-            placeDetailModal.classList.remove('active');
-            document.body.style.overflow = '';
-        });
+        closePlaceDetail.addEventListener('click', closePlaceDetailModal);
     }
     
     // Modal bezárása háttérre kattintva
-    placeDetailModal.addEventListener('click', (e) => {
-        if (e.target === placeDetailModal) {
-            placeDetailModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
+    if (placeDetailBackdrop) {
+        placeDetailBackdrop.addEventListener('click', closePlaceDetailModal);
+    }
     
     // Modal bezárása Escape billentyűvel
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && placeDetailModal.classList.contains('active')) {
-            placeDetailModal.classList.remove('active');
-            document.body.style.overflow = '';
+        if (e.key === 'Escape' && !placeDetailModal.classList.contains('hidden')) {
+            closePlaceDetailModal();
         }
     });
 });
