@@ -30,7 +30,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('amenity_key')
     )
     op.create_table('place_types',
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('type_key', sa.String(length=50), nullable=False),
     sa.Column('display_name', sa.String(length=100), nullable=False),
     sa.Column('icon', sa.String(length=10), nullable=True),
@@ -38,6 +38,9 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('type_key')
     )
+    op.execute(sa.text("DROP SEQUENCE IF EXISTS place_types_id_seq CASCADE"))
+    op.execute(sa.text("CREATE SEQUENCE place_types_id_seq OWNED BY place_types.id"))
+    op.execute(sa.text("ALTER TABLE place_types ALTER COLUMN id SET DEFAULT nextval('place_types_id_seq')"))
     op.create_table('users',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
@@ -72,7 +75,7 @@ def upgrade() -> None:
     op.create_table('places',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
-    sa.Column('type_id', sa.UUID(), nullable=False),
+    sa.Column('type_id', sa.Integer(), nullable=False),
     sa.Column('rating', sa.Numeric(precision=3, scale=2), nullable=False),
     sa.Column('address', sa.Text(), nullable=False),
     sa.Column('phone', sa.String(length=20), nullable=True),
@@ -94,7 +97,7 @@ def upgrade() -> None:
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('user_id', sa.UUID(), nullable=True),
     sa.Column('place_name', sa.String(length=255), nullable=False),
-    sa.Column('place_type_id', sa.UUID(), nullable=False),
+    sa.Column('place_type_id', sa.Integer(), nullable=False),
     sa.Column('recommendation_text', sa.Text(), nullable=False),
     sa.Column('maps_link', sa.Text(), nullable=True),
     sa.Column('address', sa.Text(), nullable=True),
@@ -176,6 +179,7 @@ def downgrade() -> None:
     op.drop_table('children')
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
+    op.execute(sa.text("DROP SEQUENCE IF EXISTS place_types_id_seq CASCADE"))
     op.drop_table('place_types')
     op.drop_table('amenities')
     # ### end Alembic commands ###

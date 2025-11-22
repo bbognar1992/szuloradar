@@ -22,9 +22,11 @@ depends_on: Union[str, Sequence[str], None] = None
 # Test user ID from previous migration
 TEST_USER_ID = "550e8400-e29b-41d4-a716-446655440000"
 
-# Place type IDs from previous migration
-MUSEUM_TYPE_ID = '33333333-3333-3333-3333-333333333333'
-LIBRARY_TYPE_ID = '55555555-5555-5555-5555-555555555555'
+# Place type IDs (integers from place_types migration: 1=kavezo, 2=etterem, 3=edzoterem, 4=park)
+# Note: These old place types (museum, library) don't exist in new schema, using arbitrary IDs
+# They will be deleted when place_types migration runs anyway
+MUSEUM_TYPE_ID = 1  # kavezo (temporary mapping)
+LIBRARY_TYPE_ID = 1  # kavezo (temporary mapping)
 
 
 def upgrade() -> None:
@@ -33,7 +35,7 @@ def upgrade() -> None:
         sa.column('id', sa.UUID()),
         sa.column('user_id', sa.UUID()),
         sa.column('place_name', sa.String()),
-        sa.column('place_type_id', sa.UUID()),
+        sa.column('place_type_id', sa.Integer()),
         sa.column('recommendation_text', sa.Text()),
         sa.column('maps_link', sa.Text()),
         sa.column('address', sa.Text()),
@@ -52,7 +54,7 @@ def upgrade() -> None:
                 'id': uuid.UUID('11111111-1111-1111-1111-111111111111'),
                 'user_id': uuid.UUID(TEST_USER_ID),
                 'place_name': 'Children\'s Museum',
-                'place_type_id': uuid.UUID(MUSEUM_TYPE_ID),
+                'place_type_id': MUSEUM_TYPE_ID,
                 'recommendation_text': 'Great interactive museum for kids with hands-on exhibits',
                 'maps_link': 'https://maps.google.com/?q=Children+Museum',
                 'address': '321 Museum Street, Budapest',
@@ -67,7 +69,7 @@ def upgrade() -> None:
                 'id': uuid.UUID('22222222-2222-2222-2222-222222222222'),
                 'user_id': uuid.UUID(TEST_USER_ID),
                 'place_name': 'Public Library - Children\'s Section',
-                'place_type_id': uuid.UUID(LIBRARY_TYPE_ID),
+                'place_type_id': LIBRARY_TYPE_ID,
                 'recommendation_text': 'Wonderful children\'s section with story time and reading corner',
                 'maps_link': 'https://maps.google.com/?q=Public+Library',
                 'address': '654 Library Lane, Budapest',

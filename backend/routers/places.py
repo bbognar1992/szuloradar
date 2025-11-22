@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from uuid import UUID
 from typing import Optional
@@ -45,7 +45,7 @@ def get_places(
     db: Session = Depends(get_db)
 ):
     """Get list of places with filtering and pagination"""
-    query = db.query(Place).filter(Place.is_active == True)
+    query = db.query(Place).options(joinedload(Place.place_type), joinedload(Place.amenities)).filter(Place.is_active == True)
     
     # Filter by type
     if type_key:
@@ -122,7 +122,7 @@ def get_places(
 @router.get("/{place_id}", response_model=PlaceResponse)
 def get_place(place_id: UUID, db: Session = Depends(get_db)):
     """Get a single place by ID"""
-    place = db.query(Place).filter(
+    place = db.query(Place).options(joinedload(Place.place_type), joinedload(Place.amenities)).filter(
         Place.id == place_id,
         Place.is_active == True
     ).first()
@@ -201,6 +201,8 @@ def create_place(
     
     db.commit()
     db.refresh(place)
+    # Reload with relationships
+    place = db.query(Place).options(joinedload(Place.place_type), joinedload(Place.amenities)).filter(Place.id == place.id).first()
     
     return {
         "id": place.id,
@@ -240,7 +242,7 @@ def update_place(
     db: Session = Depends(get_db)
 ):
     """Update a place (admin only - simplified for now)"""
-    place = db.query(Place).filter(Place.id == place_id).first()
+    place = db.query(Place).options(joinedload(Place.amenities)).filter(Place.id == place_id).first()
     if not place:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -282,6 +284,8 @@ def update_place(
     
     db.commit()
     db.refresh(place)
+    # Reload with relationships
+    place = db.query(Place).options(joinedload(Place.place_type), joinedload(Place.amenities)).filter(Place.id == place.id).first()
     
     return {
         "id": place.id,

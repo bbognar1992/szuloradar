@@ -20,10 +20,10 @@ down_revision: Union[str, None] = 'c3d4e5f6a7b8'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-# Place type IDs from previous migration
-PLAYGROUND_TYPE_ID = '11111111-1111-1111-1111-111111111111'
-PARK_TYPE_ID = '22222222-2222-2222-2222-222222222222'
-RESTAURANT_TYPE_ID = '44444444-4444-4444-4444-444444444444'
+# Place type IDs (integers from place_types migration: 1=kavezo, 2=etterem, 3=edzoterem, 4=park)
+PLAYGROUND_TYPE_ID = 4  # park
+PARK_TYPE_ID = 4  # park
+RESTAURANT_TYPE_ID = 2  # etterem
 
 
 def upgrade() -> None:
@@ -31,7 +31,7 @@ def upgrade() -> None:
         'places',
         sa.column('id', sa.UUID()),
         sa.column('name', sa.String()),
-        sa.column('type_id', sa.UUID()),
+        sa.column('type_id', sa.Integer()),
         sa.column('rating', sa.Numeric()),
         sa.column('address', sa.Text()),
         sa.column('phone', sa.String()),
@@ -52,7 +52,7 @@ def upgrade() -> None:
             {
                 'id': uuid.UUID('11111111-1111-1111-1111-111111111111'),
                 'name': 'Central Park Playground',
-                'type_id': uuid.UUID(PLAYGROUND_TYPE_ID),
+                'type_id': PLAYGROUND_TYPE_ID,
                 'rating': Decimal('4.5'),
                 'address': '123 Main Street, Budapest',
                 'phone': '+36-1-123-4567',
@@ -69,7 +69,7 @@ def upgrade() -> None:
             {
                 'id': uuid.UUID('22222222-2222-2222-2222-222222222222'),
                 'name': 'City Park',
-                'type_id': uuid.UUID(PARK_TYPE_ID),
+                'type_id': PARK_TYPE_ID,
                 'rating': Decimal('4.8'),
                 'address': '456 Park Avenue, Budapest',
                 'phone': '+36-1-234-5678',
@@ -86,7 +86,7 @@ def upgrade() -> None:
             {
                 'id': uuid.UUID('33333333-3333-3333-3333-333333333333'),
                 'name': 'Family Friendly Restaurant',
-                'type_id': uuid.UUID(RESTAURANT_TYPE_ID),
+                'type_id': RESTAURANT_TYPE_ID,
                 'rating': Decimal('4.2'),
                 'address': '789 Restaurant Row, Budapest',
                 'phone': '+36-1-345-6789',

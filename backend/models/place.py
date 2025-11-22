@@ -18,7 +18,7 @@ place_amenities = Table(
 class PlaceType(Base):
     __tablename__ = "place_types"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     type_key = Column(String(50), unique=True, nullable=False)
     display_name = Column(String(100), nullable=False)
     icon = Column(String(10))
@@ -34,7 +34,7 @@ class Place(Base):
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
-    type_id = Column(UUID(as_uuid=True), ForeignKey("place_types.id"), nullable=False, index=True)
+    type_id = Column(Integer, ForeignKey("place_types.id"), nullable=False, index=True)
     rating = Column(Numeric(3, 2), default=0.0, nullable=False)
     address = Column(Text, nullable=False)
     phone = Column(String(20))

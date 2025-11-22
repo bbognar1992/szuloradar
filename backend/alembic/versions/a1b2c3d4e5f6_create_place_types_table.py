@@ -6,7 +6,6 @@ Create Date: 2025-11-09 14:00:00.000000
 
 """
 from typing import Sequence, Union
-import uuid
 from datetime import datetime
 
 from alembic import op
@@ -21,9 +20,19 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    # Remove existing place types and related data
+    # Delete from junction tables first
+    op.execute(sa.text("DELETE FROM recommendation_amenities"))
+    op.execute(sa.text("DELETE FROM place_amenities"))
+    # Delete from tables that reference place_types
+    op.execute(sa.text("DELETE FROM recommendations"))
+    op.execute(sa.text("DELETE FROM places"))
+    # Finally delete place types
+    op.execute(sa.text("DELETE FROM place_types"))
+    
     place_types_table = sa.table(
         'place_types',
-        sa.column('id', sa.UUID()),
+        sa.column('id', sa.Integer()),
         sa.column('type_key', sa.String()),
         sa.column('display_name', sa.String()),
         sa.column('icon', sa.String()),
@@ -34,46 +43,40 @@ def upgrade() -> None:
         place_types_table,
         [
             {
-                'id': uuid.UUID('11111111-1111-1111-1111-111111111111'),
-                'type_key': 'playground',
-                'display_name': 'Playground',
-                'icon': '🛝',
+                'id': 1,
+                'type_key': 'kavezo',
+                'display_name': 'Kávézó',
+                'icon': '☕',
                 'created_at': datetime.utcnow(),
             },
             {
-                'id': uuid.UUID('22222222-2222-2222-2222-222222222222'),
+                'id': 2,
+                'type_key': 'etterem',
+                'display_name': 'Étterem',
+                'icon': '🍽️',
+                'created_at': datetime.utcnow(),
+            },
+            {
+                'id': 3,
+                'type_key': 'edzoterem',
+                'display_name': 'Edzőterem',
+                'icon': '💪',
+                'created_at': datetime.utcnow(),
+            },
+            {
+                'id': 4,
                 'type_key': 'park',
                 'display_name': 'Park',
                 'icon': '🌳',
                 'created_at': datetime.utcnow(),
             },
-            {
-                'id': uuid.UUID('33333333-3333-3333-3333-333333333333'),
-                'type_key': 'museum',
-                'display_name': 'Museum',
-                'icon': '🏛️',
-                'created_at': datetime.utcnow(),
-            },
-            {
-                'id': uuid.UUID('44444444-4444-4444-4444-444444444444'),
-                'type_key': 'restaurant',
-                'display_name': 'Restaurant',
-                'icon': '🍽️',
-                'created_at': datetime.utcnow(),
-            },
-            {
-                'id': uuid.UUID('55555555-5555-5555-5555-555555555555'),
-                'type_key': 'library',
-                'display_name': 'Library',
-                'icon': '📚',
-                'created_at': datetime.utcnow(),
-            },
         ]
     )
+    
+    # Reset sequence to continue from 4
+    op.execute(sa.text("SELECT setval('place_types_id_seq', 4, true)"))
 
 
 def downgrade() -> None:
-    op.execute(
-        sa.text("DELETE FROM place_types WHERE id IN ('11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333', '44444444-4444-4444-4444-444444444444', '55555555-5555-5555-5555-555555555555')")
-    )
+    op.execute(sa.text("DELETE FROM place_types WHERE id IN (1, 2, 3, 4)"))
 
