@@ -22,12 +22,17 @@ depends_on: Union[str, Sequence[str], None] = None
 # Test user ID from previous migration
 TEST_USER_ID = "550e8400-e29b-41d4-a716-446655440000"
 
-# Place IDs from previous migration
-PLAYGROUND_PLACE_ID = '11111111-1111-1111-1111-111111111111'
-PARK_PLACE_ID = '22222222-2222-2222-2222-222222222222'
+# Place IDs from previous migration (using new restaurant place IDs)
+RESTAURANT_PLACE_ID_1 = '00000000-0000-0000-0000-000000000001'  # LAMAREDA Étterem
+RESTAURANT_PLACE_ID_2 = '00000000-0000-0000-0000-000000000002'  # Westy Hajó Étterem
 
 
 def upgrade() -> None:
+    # Remove any existing saved_places that reference old place IDs
+    op.execute(
+        sa.text("DELETE FROM saved_places WHERE place_id IN ('11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333')")
+    )
+    
     saved_places_table = sa.table(
         'saved_places',
         sa.column('id', sa.UUID()),
@@ -42,13 +47,13 @@ def upgrade() -> None:
             {
                 'id': uuid.UUID('11111111-1111-1111-1111-111111111111'),
                 'user_id': uuid.UUID(TEST_USER_ID),
-                'place_id': uuid.UUID(PLAYGROUND_PLACE_ID),
+                'place_id': uuid.UUID(RESTAURANT_PLACE_ID_1),
                 'created_at': datetime.utcnow(),
             },
             {
                 'id': uuid.UUID('22222222-2222-2222-2222-222222222222'),
                 'user_id': uuid.UUID(TEST_USER_ID),
-                'place_id': uuid.UUID(PARK_PLACE_ID),
+                'place_id': uuid.UUID(RESTAURANT_PLACE_ID_2),
                 'created_at': datetime.utcnow(),
             },
         ]
