@@ -25,7 +25,7 @@ export default function SearchAndFilters({
 }: SearchAndFiltersProps) {
   return (
     <div className="w-full max-w-7xl mx-auto mb-8 px-4">
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col lg:flex-row items-center gap-6">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col lg:flex-row items-center gap-6">
         {/* Logo Section */}
         <div className="flex-shrink-0 pr-6 border-r border-gray-200 hidden lg:block">
           <Image
@@ -60,7 +60,7 @@ export default function SearchAndFilters({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Keresés hely név alapján..."
             aria-label="Keresés"
-            className="search-input-hidden w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:bg-white transition-all duration-200 text-sm"
+            className="search-input-hidden w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:bg-white transition-all duration-200 text-sm h-[46px]"
           />
         </div>
 
@@ -73,7 +73,7 @@ export default function SearchAndFilters({
               onClick={() => onFilterChange(filter.key)}
               className={`filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
                 activeFilter === filter.key
-                  ? 'bg-white text-teal-600 shadow-sm'
+                  ? 'bg-white text-teal-600 shadow-sm active'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
