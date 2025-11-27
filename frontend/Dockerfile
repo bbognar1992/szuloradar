@@ -1,22 +1,16 @@
-# Use nginx alpine image for serving static files
-FROM nginx:alpine
+FROM node:20-alpine
 
-# Remove default nginx configuration
-RUN rm /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY package*.json ./
 
-# Copy frontend files to nginx html directory
-COPY . /usr/share/nginx/html
+RUN npm install --legacy-peer-deps
 
-# Expose port 80
-EXPOSE 80
+COPY . .
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+EXPOSE 3000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+ENV PORT=3000
+
+CMD ["npm", "run", "dev"]
 

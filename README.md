@@ -33,7 +33,7 @@ A kid-friendly places discovery application that helps parents find and share re
 3. **Access the application**:
    - Backend API: http://localhost:8000
    - API Documentation: http://localhost:8000/docs
-   - Frontend: Open `frontend/index.html` in your browser
+   - Frontend: http://localhost:3000 (override with `FRONTEND_PORT` if needed)
 
 4. **Stop the development environment**:
    
@@ -89,7 +89,7 @@ All commands have `-old` variants for compatibility with Docker Compose V1. Use 
 ## 🏗️ Project Structure
 
 - `backend/` - FastAPI backend application
-- `frontend/` - Frontend HTML/CSS/JavaScript application
+- `frontend/` - Next.js frontend application
 - `docker-compose.dev.yml` - Docker Compose configuration for development
 
 ## 🔧 Development
