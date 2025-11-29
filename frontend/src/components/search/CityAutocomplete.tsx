@@ -6,17 +6,11 @@ import { getCities } from '@/lib/api/places';
 interface CityAutocompleteProps {
   city?: string;
   onCityChange: (city: string) => void;
-  focusedField: 'search' | 'city' | null;
-  onFocusChange: (field: 'search' | 'city' | null) => void;
-  searchInputRef: React.RefObject<HTMLInputElement>;
 }
 
 export default function CityAutocomplete({
   city,
   onCityChange,
-  focusedField,
-  onFocusChange,
-  searchInputRef,
 }: CityAutocompleteProps) {
   const [cities, setCities] = useState<string[]>([]);
   const [loadingCities, setLoadingCities] = useState(true);
@@ -45,7 +39,7 @@ export default function CityAutocomplete({
   }, [city]);
 
   // Filter cities based on input
-  const filteredCities = cities.filter((cityName) =>
+  const filteredCities = cities.filter((cityName: string) =>
     cityName.toLowerCase().includes(cityInput.toLowerCase())
   );
 
@@ -125,20 +119,10 @@ export default function CityAutocomplete({
   }, []);
 
   return (
-    <div
-      className={`relative transition-all duration-300 ease-in-out ${
-        focusedField === 'city'
-          ? 'flex-[1.1]'
-          : focusedField === 'search'
-          ? 'flex-[0.9]'
-          : 'flex-1'
-      } min-w-0`}
-    >
+    <div className="relative flex-1 min-w-0">
       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
         <svg
-          className={`w-5 h-5 transition-colors duration-200 ${
-            focusedField === 'city' ? 'text-teal-500' : 'text-gray-400'
-          }`}
+          className="w-5 h-5 text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -163,25 +147,14 @@ export default function CityAutocomplete({
         value={cityInput}
         onChange={(e) => handleCityInputChange(e.target.value)}
         onFocus={() => {
-          onFocusChange('city');
           if (!isDropdownOpen) {
             setIsDropdownOpen(true);
           }
         }}
         onBlur={() => {
-          // Delay to allow dropdown clicks
+          // Only close dropdown, don't change focus state
           setTimeout(() => {
-            // If clicking inside dropdown, keep focus
-            if (dropdownRef.current?.contains(document.activeElement)) {
-              return;
-            }
-            // If clicking on search input, switch focus
-            if (document.activeElement === searchInputRef.current) {
-              onFocusChange('search');
-              setIsDropdownOpen(false);
-            } else {
-              // Clicked outside both inputs, reset to equal width and close dropdown
-              onFocusChange(null);
+            if (!dropdownRef.current?.contains(document.activeElement)) {
               setIsDropdownOpen(false);
             }
           }, 200);
@@ -200,7 +173,6 @@ export default function CityAutocomplete({
             setCityInput('');
             onCityChange('');
             cityInputRef.current?.blur();
-            onFocusChange(null);
           }}
           className="absolute inset-y-0 right-0 pr-4 flex items-center hover:text-gray-700 transition-colors cursor-pointer"
           aria-label="Város törlése"
