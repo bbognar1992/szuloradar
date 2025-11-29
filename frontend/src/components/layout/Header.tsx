@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import type { User } from '@/types/auth';
 import AuthModal from '@/components/auth/AuthModal';
@@ -62,7 +63,11 @@ export default function Header({ user, onLogout }: HeaderProps) {
                       />
                       <span>Fiókom</span>
                     </a>
-                    <a href="#" className="hamburger-menu-item">
+                    <Link
+                      href="/recommendation"
+                      className="hamburger-menu-item"
+                      onClick={() => setHamburgerOpen(false)}
+                    >
                       <Image
                         src="/assets/recommend.png"
                         alt="Ajánlás beküldése"
@@ -71,7 +76,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                         height={24}
                       />
                       <span>Ajánlás beküldése</span>
-                    </a>
+                    </Link>
                     <a
                       href="#"
                       className="hamburger-menu-item hamburger-menu-item-logout"

@@ -12,7 +12,7 @@ from schemas.recommendation import (
     RecommendationResponse,
     RecommendationListResponse
 )
-from auth import get_current_active_user, get_current_user
+from auth import get_current_active_user_from_token
 from dependencies import PaginationParams, get_pagination_info
 
 router = APIRouter(prefix="/api/recommendations", tags=["Recommendations"])
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/api/recommendations", tags=["Recommendations"])
 @router.post("", response_model=RecommendationResponse, status_code=status.HTTP_201_CREATED)
 def create_recommendation(
     recommendation_data: RecommendationCreate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Create a new place recommendation"""
@@ -86,7 +86,7 @@ def create_recommendation(
 @router.get("/me", response_model=dict)
 def get_my_recommendations(
     pagination: PaginationParams = Depends(),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Get current user's recommendations"""
@@ -230,7 +230,7 @@ def get_recommendation(
 def update_recommendation(
     recommendation_id: UUID,
     recommendation_data: RecommendationUpdate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Update a recommendation status (for admin review)"""

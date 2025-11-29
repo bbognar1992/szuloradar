@@ -21,3 +21,24 @@ export const getCities = async (): Promise<string[]> => {
   return request<string[]>('/api/places/cities');
 };
 
+export interface PlaceType {
+  id: number;
+  type_key: string;
+  display_name: string;
+  icon?: string;
+}
+
+export interface Amenity {
+  id: number;
+  amenity_key: string;
+  display_name: string;
+  icon?: string;
+}
+
+export const getPlaceTypes = async (): Promise<PlaceType[]> => {
+  return request<PlaceType[]>('/api/places/types');
+};
+
+export const getAmenities = async (): Promise<Amenity[]> => {
+  return request<Amenity[]>('/api/places/amenities');
+};
