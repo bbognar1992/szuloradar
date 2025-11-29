@@ -12,11 +12,13 @@ export default function Home() {
   const { user, loading: authLoading, logout } = useAuth();
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  const [city, setCity] = useState<string | undefined>(undefined);
   const { places, loading, error } = usePlaces({
     page: 1,
     page_size: 20,
     search: search || undefined,
     type_key: typeFilter,
+    city: city || undefined,
   });
 
   if (authLoading) {
@@ -37,6 +39,8 @@ export default function Home() {
           onSearchChange={setSearch}
           activeFilter={typeFilter || 'all'}
           onFilterChange={(filter) => setTypeFilter(filter === 'all' ? undefined : filter)}
+          city={city}
+          onCityChange={(selectedCity) => setCity(selectedCity || undefined)}
         />
 
         <main className="main">

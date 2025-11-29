@@ -9,10 +9,15 @@ export const getPlaces = async (params?: GetPlacesParams): Promise<PlaceListResp
   if (params?.page_size) queryParams.append('page_size', params.page_size.toString());
   if (params?.type_key) queryParams.append('type_key', params.type_key);
   if (params?.search) queryParams.append('search', params.search);
+  if (params?.city) queryParams.append('city', params.city);
   if (params?.min_rating) queryParams.append('min_rating', params.min_rating.toString());
 
   const queryString = queryParams.toString();
   const endpoint = `/api/places${queryString ? `?${queryString}` : ''}`;
   return request<PlaceListResponse>(endpoint);
+};
+
+export const getCities = async (): Promise<string[]> => {
+  return request<string[]>('/api/places/cities');
 };
 

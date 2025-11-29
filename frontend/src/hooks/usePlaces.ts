@@ -31,7 +31,7 @@ export function usePlaces(params?: GetPlacesParams): UsePlacesReturn {
 
   useEffect(() => {
     fetchPlaces();
-  }, [params?.page, params?.page_size, params?.type_key, params?.search, params?.min_rating]);
+  }, [params?.page, params?.page_size, params?.type_key, params?.search, params?.city, params?.min_rating]);
 
   return {
     places,
