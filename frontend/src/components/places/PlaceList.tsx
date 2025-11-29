@@ -58,7 +58,7 @@ export default function PlaceList({ places, loading, error }: PlaceListProps) {
   return (
     <div className="place-list">
       {places.map((place) => (
-        <div key={place.id}>
+        <div key={place.id} className="h-full">
           <PlaceCard place={place} />
         </div>
       ))}
