@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import type { User } from '@/types/auth';
+import AuthModal from '@/components/auth/AuthModal';
 
 interface HeaderProps {
   user: User | null;
@@ -12,6 +12,8 @@ interface HeaderProps {
 
 export default function Header({ user, onLogout }: HeaderProps) {
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
 
   return (
     <header className="main-header">
@@ -20,9 +22,15 @@ export default function Header({ user, onLogout }: HeaderProps) {
         {!user ? (
           <div className="user-profile" id="loginTrigger">
             <div className="profile-info">
-              <Link href="/login" className="profile-name">
+              <button
+                onClick={() => {
+                  setAuthModalMode('login');
+                  setAuthModalOpen(true);
+                }}
+                className="profile-name cursor-pointer"
+              >
                 Bejelentkezés
-              </Link>
+              </button>
             </div>
           </div>
         ) : (
@@ -89,6 +97,11 @@ export default function Header({ user, onLogout }: HeaderProps) {
           </div>
         )}
       </div>
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authModalMode}
+      />
     </header>
   );
 }
