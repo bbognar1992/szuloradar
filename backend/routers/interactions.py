@@ -13,7 +13,7 @@ from schemas.interaction import (
     PlaceRatingResponse
 )
 from schemas.place import PlaceResponse
-from auth import get_current_active_user
+from auth import get_current_active_user_from_token
 from dependencies import PaginationParams, get_pagination_info
 
 router = APIRouter(prefix="/api/interactions", tags=["Interactions"])
@@ -24,7 +24,7 @@ router = APIRouter(prefix="/api/interactions", tags=["Interactions"])
 @router.get("/saved", response_model=dict)
 def get_saved_places(
     pagination: PaginationParams = Depends(),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Get current user's saved places"""
@@ -80,7 +80,7 @@ def get_saved_places(
 @router.post("/saved/{place_id}", response_model=SavedPlaceResponse, status_code=status.HTTP_201_CREATED)
 def save_place(
     place_id: UUID,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Save a place to user's favorites"""
@@ -117,7 +117,7 @@ def save_place(
 @router.delete("/saved/{place_id}", status_code=status.HTTP_204_NO_CONTENT)
 def unsave_place(
     place_id: UUID,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Remove a place from user's favorites"""
@@ -140,7 +140,7 @@ def unsave_place(
 @router.get("/saved/{place_id}/check")
 def check_if_saved(
     place_id: UUID,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Check if a place is saved by current user"""
@@ -157,7 +157,7 @@ def check_if_saved(
 @router.post("/ratings", response_model=PlaceRatingResponse, status_code=status.HTTP_201_CREATED)
 def create_rating(
     rating_data: PlaceRatingCreate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Create or update a rating for a place"""
@@ -201,7 +201,7 @@ def create_rating(
 def update_rating(
     place_id: UUID,
     rating_data: PlaceRatingUpdate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Update a rating for a place"""
@@ -229,7 +229,7 @@ def update_rating(
 @router.delete("/ratings/{place_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_rating(
     place_id: UUID,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Delete a rating for a place"""
@@ -252,7 +252,7 @@ def delete_rating(
 @router.get("/ratings/{place_id}")
 def get_my_rating(
     place_id: UUID,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Get current user's rating for a place"""

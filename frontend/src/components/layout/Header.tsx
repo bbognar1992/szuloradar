@@ -18,7 +18,9 @@ export default function Header({ user, onLogout }: HeaderProps) {
 
   return (
     <header className="main-header">
-      <h1>Fedezd fel a gyerekbarát helyeket</h1>
+      <Link href="/">
+        <h1 className="cursor-pointer hover:text-teal-600 transition-colors">Fedezd fel a gyerekbarát helyeket</h1>
+      </Link>
       <div className="header-right">
         {!user ? (
           <div className="user-profile" id="loginTrigger">
@@ -36,10 +38,13 @@ export default function Header({ user, onLogout }: HeaderProps) {
           </div>
         ) : (
           <div className="header-right-buttons">
-            <button className="my-lists-button">
+            <Link
+              href="/mylist"
+              className="my-lists-button"
+            >
               <span>📋</span>
               <span>Listám</span>
-            </button>
+            </Link>
             <div className="user-profile hamburger-menu">
               <button
                 className={`hamburger-button ${hamburgerOpen ? 'active' : ''}`}
