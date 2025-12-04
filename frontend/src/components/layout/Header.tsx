@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { User } from '@/types/auth';
+import AuthModal from '@/components/auth/AuthModal';
 
 interface HeaderProps {
   user: User | null;
@@ -12,25 +13,38 @@ interface HeaderProps {
 
 export default function Header({ user, onLogout }: HeaderProps) {
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
 
   return (
     <header className="main-header">
-      <h1>Fedezd fel a gyerekbarát helyeket</h1>
+      <Link href="/">
+        <h1 className="cursor-pointer hover:text-teal-600 transition-colors">Fedezd fel a gyerekbarát helyeket</h1>
+      </Link>
       <div className="header-right">
         {!user ? (
           <div className="user-profile" id="loginTrigger">
             <div className="profile-info">
-              <Link href="/login" className="profile-name">
+              <button
+                onClick={() => {
+                  setAuthModalMode('login');
+                  setAuthModalOpen(true);
+                }}
+                className="profile-name cursor-pointer"
+              >
                 Bejelentkezés
-              </Link>
+              </button>
             </div>
           </div>
         ) : (
           <div className="header-right-buttons">
-            <button className="my-lists-button">
+            <Link
+              href="/mylist"
+              className="my-lists-button"
+            >
               <span>📋</span>
               <span>Listám</span>
-            </button>
+            </Link>
             <div className="user-profile hamburger-menu">
               <button
                 className={`hamburger-button ${hamburgerOpen ? 'active' : ''}`}
@@ -54,7 +68,11 @@ export default function Header({ user, onLogout }: HeaderProps) {
                       />
                       <span>Fiókom</span>
                     </a>
-                    <a href="#" className="hamburger-menu-item">
+                    <Link
+                      href="/recommendation"
+                      className="hamburger-menu-item"
+                      onClick={() => setHamburgerOpen(false)}
+                    >
                       <Image
                         src="/assets/recommend.png"
                         alt="Ajánlás beküldése"
@@ -63,7 +81,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                         height={24}
                       />
                       <span>Ajánlás beküldése</span>
-                    </a>
+                    </Link>
                     <a
                       href="#"
                       className="hamburger-menu-item hamburger-menu-item-logout"
@@ -89,6 +107,11 @@ export default function Header({ user, onLogout }: HeaderProps) {
           </div>
         )}
       </div>
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authModalMode}
+      />
     </header>
   );
 }

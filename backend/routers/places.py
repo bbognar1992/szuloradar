@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
+import re
 from database import get_db
 from models.user import User
 from models.place import Place, PlaceType, Amenity
@@ -35,11 +36,37 @@ def get_amenities(db: Session = Depends(get_db)):
     return amenities
 
 
+@router.get("/cities", response_model=List[str])
+def get_cities(db: Session = Depends(get_db)):
+    """Get list of unique cities from places addresses"""
+    places = db.query(Place.address).filter(Place.is_active == True).distinct().all()
+    cities = set()
+    
+    # Extract city from address (format: "9022 Győr, Apáca u. 4." or "Győr, ...")
+    for (address,) in places:
+        if not address:
+            continue
+        # Try to match pattern: "XXXX City," or "City,"
+        match = re.search(r'\d{4}\s+([^,]+),|^([^,]+),', address)
+        if match:
+            city = match.group(1) or match.group(2)
+            if city:
+                cities.add(city.strip())
+        else:
+            # If no comma pattern, try to extract first word after postal code
+            match = re.search(r'\d{4}\s+(\w+)', address)
+            if match:
+                cities.add(match.group(1).strip())
+    
+    return sorted(list(cities))
+
+
 @router.get("", response_model=PlaceListResponse)
 def get_places(
     pagination: PaginationParams = Depends(),
     type_key: Optional[str] = Query(None, description="Filter by place type"),
     search: Optional[str] = Query(None, description="Search in name and description"),
+    city: Optional[str] = Query(None, description="Filter by city name"),
     min_rating: Optional[float] = Query(None, ge=0, le=5, description="Minimum rating"),
     is_approved: Optional[bool] = Query(True, description="Filter by approval status"),
     db: Session = Depends(get_db)
@@ -52,6 +79,12 @@ def get_places(
         place_type = db.query(PlaceType).filter(PlaceType.type_key == type_key).first()
         if place_type:
             query = query.filter(Place.type_id == place_type.id)
+    
+    # Filter by city
+    if city:
+        # Match city in address (format: "9022 Győr," or "Győr,")
+        city_pattern = f"%{city}%"
+        query = query.filter(Place.address.ilike(city_pattern))
     
     # Filter by approval status
     if is_approved is not None:

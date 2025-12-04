@@ -39,6 +39,7 @@ export interface GetPlacesParams {
   page_size?: number;
   type_key?: string;
   search?: string;
+  city?: string;
   min_rating?: number;
 }
 
