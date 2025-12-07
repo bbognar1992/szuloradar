@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Union
 from pathlib import Path
 
@@ -16,10 +16,12 @@ class Settings(BaseSettings):
     debug: bool = True
     cors_origins: Union[List[str], str] = ["http://localhost:3001", "http://localhost:8000"]
     
-    class Config:
+    model_config = SettingsConfigDict(
         # Load .env from project root (one level up from backend/)
-        env_file = str(Path(__file__).parent.parent / ".env")
-        case_sensitive = False
+        env_file=str(Path(__file__).parent.parent / ".env"),
+        case_sensitive=False,
+        extra="ignore"  # Ignore extra fields from .env that aren't defined in Settings
+    )
     
     def get_cors_origins(self) -> List[str]:
         """Parse CORS origins from string or list"""
