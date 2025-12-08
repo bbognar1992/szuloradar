@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     
     # Application
     debug: bool = True
-    cors_origins: Union[List[str], str] = ["http://localhost:3001", "http://localhost:8000"]
+    cors_origins: Union[List[str], str] = ["http://localhost:3000", "http://localhost:3001"]
     
     model_config = SettingsConfigDict(
         # Use OS environment variables only (not .env file)
