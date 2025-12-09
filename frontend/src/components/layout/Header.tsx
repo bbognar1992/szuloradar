@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { User } from '@/types/auth';
@@ -11,7 +11,7 @@ interface HeaderProps {
   onLogout: () => void;
 }
 
-export default function Header({ user, onLogout }: HeaderProps) {
+const Header = memo(function Header({ user, onLogout }: HeaderProps) {
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
@@ -130,4 +130,6 @@ export default function Header({ user, onLogout }: HeaderProps) {
       />
     </header>
   );
-}
+});
+
+export default Header;

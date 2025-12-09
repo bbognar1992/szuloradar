@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { login as apiLogin, register as apiRegister, getCurrentUser } from '@/lib/api';
 import type { User } from '@/types/auth';
 
@@ -35,23 +35,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     const response = await apiLogin({ email, password });
     localStorage.setItem('auth_token', response.access_token);
     const userData = await getCurrentUser();
     setUser(userData);
-  };
+  }, []);
 
-  const register = async (email: string, password: string, firstName?: string, lastName?: string) => {
+  const register = useCallback(async (email: string, password: string, firstName?: string, lastName?: string) => {
     await apiRegister({ email, password, first_name: firstName, last_name: lastName });
     // After registration, automatically log in
     await login(email, password);
-  };
+  }, [login]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('auth_token');
     setUser(null);
-  };
+  }, []);
 
   return (
     <AuthContext.Provider
