@@ -8,9 +8,11 @@ interface PlaceListProps {
   loading?: boolean;
   error?: string | null;
   onUnsave?: (placeId: string) => void;
+  savedIds?: Set<string>;
+  onSavedChange?: (placeId: string, saved: boolean) => void;
 }
 
-export default function PlaceList({ places, loading, error, onUnsave }: PlaceListProps) {
+export default function PlaceList({ places, loading, error, onUnsave, savedIds, onSavedChange }: PlaceListProps) {
   // Always show current places immediately, no loading state handling
 
   // Show error
@@ -60,7 +62,12 @@ export default function PlaceList({ places, loading, error, onUnsave }: PlaceLis
     <div className="place-list">
       {places.map((place) => (
         <div key={place.id} className="h-full">
-          <PlaceCard place={place} onUnsave={onUnsave} />
+          <PlaceCard
+            place={place}
+            onUnsave={onUnsave}
+            isSavedInitial={savedIds?.has(place.id)}
+            onSavedChange={onSavedChange}
+          />
         </div>
       ))}
     </div>

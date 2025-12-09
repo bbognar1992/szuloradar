@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getSavedPlaces, unsavePlace, type SavedPlace } from '@/lib/api/interactions';
@@ -45,6 +45,8 @@ export default function MyListPage() {
       fetchSavedPlaces();
     }
   }, [user, authLoading, router, page]);
+
+  const savedIdSet = useMemo(() => new Set(savedPlaces.map((p) => p.id)), [savedPlaces]);
 
   const handleUnsave = async (placeId: string) => {
     try {
@@ -120,7 +122,19 @@ export default function MyListPage() {
                 </button>
               </div>
             ) : (
-              <PlaceList places={savedPlaces} loading={loading} error={error} onUnsave={handleUnsave} />
+              <PlaceList
+                places={savedPlaces}
+                loading={loading}
+                error={error}
+                onUnsave={handleUnsave}
+                savedIds={savedIdSet}
+                onSavedChange={(id, saved) => {
+                  if (!saved) {
+                    setSavedPlaces((prev) => prev.filter((p) => p.id !== id));
+                    setTotal((prev) => prev - 1);
+                  }
+                }}
+              />
             )}
           </div>
         </main>
