@@ -18,8 +18,8 @@ export default function PlaceList({ places, loading, error, onUnsave, savedIds, 
   // Show error
   if (error) {
     return (
-      <div className="place-list">
-        <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
+      <div className="place-list px-5">
+        <div className="col-span-full flex flex-col items-center justify-center py-16">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
@@ -31,8 +31,8 @@ export default function PlaceList({ places, loading, error, onUnsave, savedIds, 
   // Show empty state if no places
   if (places.length === 0) {
     return (
-      <div className="place-list">
-        <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
+      <div className="place-list px-5">
+        <div className="col-span-full flex flex-col items-center justify-center py-16">
           <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
             <svg
               className="w-12 h-12 text-gray-400"
@@ -59,7 +59,7 @@ export default function PlaceList({ places, loading, error, onUnsave, savedIds, 
 
   // Show places - always show current places immediately
   return (
-    <div className="place-list">
+    <div className="place-list px-5">
       {places.map((place) => (
         <div key={place.id} className="h-full">
           <PlaceCard

@@ -27,8 +27,8 @@ const SearchAndFilters = memo(function SearchAndFilters({
   const showFilters = pathname !== '/recommendation';
 
   return (
-    <div className="w-full max-w-7xl mx-auto mb-8 px-4">
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col lg:flex-row items-center gap-4 lg:gap-6">
+    <div className="w-full max-w-7xl mx-auto mb-8 px-0 lg:px-4">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-5 pb-4 lg:p-4 flex flex-col lg:flex-row items-center gap-4 lg:gap-6 mx-5 lg:mx-0">
         {/* Logo Section */}
         <div className="flex-shrink-0 pr-6 border-r border-gray-200 hidden lg:block">
           <Link href="/" className="cursor-pointer hover:opacity-80 transition-opacity">
@@ -43,7 +43,7 @@ const SearchAndFilters = memo(function SearchAndFilters({
         </div>
 
         {/* Mobile Logo */}
-        <div className="lg:hidden w-full flex items-center gap-4 pb-4 border-b border-gray-200">
+        <div className="lg:hidden w-full flex items-center gap-4 mb-4 border-b border-gray-200 pb-4">
           <Link href="/" className="cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0">
             <Image
               src="/assets/logo2.png"
