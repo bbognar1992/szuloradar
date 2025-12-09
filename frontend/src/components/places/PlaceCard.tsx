@@ -2,27 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { savePlace, unsavePlace, checkIfSaved } from '@/lib/api/interactions';
+import { savePlace, unsavePlace } from '@/lib/api/interactions';
 import type { Place } from '@/types/place';
 
 interface PlaceCardProps {
   place: Place;
   onClick?: () => void;
   onUnsave?: (placeId: string) => void;
+  /** Saved state provided by parent; avoids per-card check calls */
+  isSavedInitial?: boolean;
+  onSavedChange?: (placeId: string, saved: boolean) => void;
 }
 
-export default function PlaceCard({ place, onClick, onUnsave }: PlaceCardProps) {
+export default function PlaceCard({ place, onClick, onUnsave, isSavedInitial = false, onSavedChange }: PlaceCardProps) {
   const { user } = useAuth();
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(isSavedInitial);
   const [saving, setSaving] = useState(false);
 
+  // keep local state in sync when parent refetches saved ids
   useEffect(() => {
-    if (user) {
-      checkIfSaved(place.id)
-        .then((result) => setIsSaved(result.is_saved))
-        .catch(() => setIsSaved(false));
-    }
-  }, [user, place.id]);
+    setIsSaved(isSavedInitial);
+  }, [isSavedInitial]);
 
   const handleSaveToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -34,9 +34,11 @@ export default function PlaceCard({ place, onClick, onUnsave }: PlaceCardProps) 
         await unsavePlace(place.id);
         setIsSaved(false);
         onUnsave?.(place.id);
+        onSavedChange?.(place.id, false);
       } else {
         await savePlace(place.id);
         setIsSaved(true);
+        onSavedChange?.(place.id, true);
       }
     } catch (err) {
       console.error('Failed to toggle save:', err);
