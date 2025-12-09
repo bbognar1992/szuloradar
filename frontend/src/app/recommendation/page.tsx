@@ -114,11 +114,8 @@ export default function RecommendPage() {
 
   return (
     <main className="main">
-      <div className="w-full max-w-3xl mx-auto px-4 py-8">
+      <div className="w-full max-w-7xl mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-          <p className="text-gray-600 mb-8">
-            Oszd meg velünk a kedvenc gyerekbarát helyedet!
-          </p>
 
           {success && (
             <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">

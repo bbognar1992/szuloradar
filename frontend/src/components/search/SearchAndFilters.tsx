@@ -61,11 +61,18 @@ const SearchAndFilters = memo(function SearchAndFilters({
         </div>
 
         {/* Right side: Title or Filters */}
-        <div className="flex-1 flex flex-col lg:flex-row gap-3 lg:gap-4 w-full lg:w-auto min-w-0 items-stretch lg:items-center">
+        <div className="flex-1 flex flex-col lg:flex-row gap-3 lg:gap-4 w-full lg:w-auto min-w-0 items-stretch lg:items-start">
           {showTitle && !showFilters ? (
-            <h1 className="text-2xl font-bold text-gray-900 m-0 hidden lg:block">
-              {showTitle}
-            </h1>
+            <div className="hidden lg:flex flex-col w-full">
+              <h1 className="text-2xl font-bold text-gray-900 m-0">
+                {showTitle}
+              </h1>
+              {pathname === '/recommendation' && (
+                <p className="text-gray-600 mt-2 mb-0">
+                  Oszd meg velünk a kedvenc gyerekbarát helyedet!
+                </p>
+              )}
+            </div>
           ) : showFilters ? (
             <>
               <CityAutocomplete
