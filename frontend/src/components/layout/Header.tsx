@@ -23,21 +23,37 @@ export default function Header({ user, onLogout }: HeaderProps) {
       </Link>
       <div className="header-right">
         {!user ? (
-          <div className="user-profile" id="loginTrigger">
-            <div className="profile-info">
-              <button
-                onClick={() => {
-                  setAuthModalMode('login');
-                  setAuthModalOpen(true);
-                }}
-                className="profile-name cursor-pointer"
-              >
-                Bejelentkezés
-              </button>
+          <div className="header-right-buttons">
+            <Link
+              href="/"
+              className="my-lists-button"
+            >
+              <span>🔍</span>
+              <span>Felfedezés</span>
+            </Link>
+            <div className="user-profile" id="loginTrigger">
+              <div className="profile-info">
+                <button
+                  onClick={() => {
+                    setAuthModalMode('login');
+                    setAuthModalOpen(true);
+                  }}
+                  className="profile-name cursor-pointer"
+                >
+                  Bejelentkezés
+                </button>
+              </div>
             </div>
           </div>
         ) : (
           <div className="header-right-buttons">
+            <Link
+              href="/"
+              className="my-lists-button"
+            >
+              <span>🔍</span>
+              <span>Felfedezés</span>
+            </Link>
             <Link
               href="/mylist"
               className="my-lists-button"
