@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SearchProvider } from "@/contexts/SearchContext";
+import ClientLayout from "@/components/layout/ClientLayout";
 
 const poppins = Poppins({
   weight: ['400', '600', '700'],
@@ -25,7 +27,11 @@ export default function RootLayout({
         className={`${poppins.variable} antialiased`}
       >
         <AuthProvider>
-          {children}
+          <SearchProvider>
+            <ClientLayout>
+              {children}
+            </ClientLayout>
+          </SearchProvider>
         </AuthProvider>
       </body>
     </html>
