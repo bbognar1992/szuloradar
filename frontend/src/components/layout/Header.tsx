@@ -71,54 +71,64 @@ const Header = memo(function Header({ user, onLogout }: HeaderProps) {
                 <span></span>
                 <span></span>
               </button>
-              {hamburgerOpen && (
-                <div className="hamburger-menu-dropdown active">
-                  <nav className="hamburger-nav">
-                    <a href="#" className="hamburger-menu-item">
-                      <Image
-                        src="/assets/account.png"
-                        alt="Fiókom"
-                        className="menu-icon"
-                        width={24}
-                        height={24}
-                      />
-                      <span>Fiókom</span>
-                    </a>
-                    <Link
-                      href="/recommendation"
-                      className="hamburger-menu-item"
-                      onClick={() => setHamburgerOpen(false)}
-                    >
-                      <Image
-                        src="/assets/recommend.png"
-                        alt="Ajánlás beküldése"
-                        className="menu-icon"
-                        width={24}
-                        height={24}
-                      />
-                      <span>Ajánlás beküldése</span>
-                    </Link>
-                    <a
-                      href="#"
-                      className="hamburger-menu-item hamburger-menu-item-logout"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onLogout();
-                        setHamburgerOpen(false);
-                      }}
-                    >
-                      <Image
-                        src="/assets/logout.png"
-                        alt="Kijelentkezés"
-                        className="menu-icon"
-                        width={24}
-                        height={24}
-                      />
-                      <span>Kijelentkezés</span>
-                    </a>
-                  </nav>
-                </div>
-              )}
+              <div
+                className={`hamburger-overlay ${hamburgerOpen ? 'active' : ''}`}
+                onClick={() => setHamburgerOpen(false)}
+                aria-hidden
+              />
+              <div className={`hamburger-menu-dropdown ${hamburgerOpen ? 'active' : ''}`}>
+                <button
+                  className="hamburger-close"
+                  aria-label="Menü bezárása"
+                  onClick={() => setHamburgerOpen(false)}
+                >
+                  ×
+                </button>
+                <nav className="hamburger-nav">
+                  <a href="#" className="hamburger-menu-item">
+                    <Image
+                      src="/assets/account.png"
+                      alt="Fiókom"
+                      className="menu-icon"
+                      width={24}
+                      height={24}
+                    />
+                    <span>Fiókom</span>
+                  </a>
+                  <Link
+                    href="/recommendation"
+                    className="hamburger-menu-item"
+                    onClick={() => setHamburgerOpen(false)}
+                  >
+                    <Image
+                      src="/assets/recommend.png"
+                      alt="Ajánlás beküldése"
+                      className="menu-icon"
+                      width={24}
+                      height={24}
+                    />
+                    <span>Ajánlás beküldése</span>
+                  </Link>
+                  <a
+                    href="#"
+                    className="hamburger-menu-item hamburger-menu-item-logout"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLogout();
+                      setHamburgerOpen(false);
+                    }}
+                  >
+                    <Image
+                      src="/assets/logout.png"
+                      alt="Kijelentkezés"
+                      className="menu-icon"
+                      width={24}
+                      height={24}
+                    />
+                    <span>Kijelentkezés</span>
+                  </a>
+                </nav>
+              </div>
             </div>
           </div>
         )}
