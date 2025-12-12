@@ -11,21 +11,27 @@ from schemas.user import (
     ChildrenResponse,
     ChildrenUpdate
 )
-from auth import get_current_active_user
+from auth import get_current_active_user_from_token
 
 router = APIRouter(prefix="/api/users", tags=["Users"])
 
 
 @router.get("/me", response_model=UserResponse)
-def get_my_profile(current_user: User = Depends(get_current_active_user)):
+def get_my_profile(
+    current_user: User = Depends(get_current_active_user_from_token),
+    db: Session = Depends(get_db)
+):
     """Get current user's profile"""
+    # Explicitly load children relationship to avoid lazy loading issues
+    # Access children to trigger loading if not already loaded
+    _ = len(current_user.children)
     return current_user
 
 
 @router.put("/me", response_model=UserResponse)
 def update_my_profile(
     profile_data: UserProfileUpdate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Update current user's profile"""
@@ -63,7 +69,7 @@ def update_my_profile(
 
 @router.get("/me/children", response_model=list[ChildrenResponse])
 def get_my_children(
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Get current user's children"""
@@ -74,7 +80,7 @@ def get_my_children(
 @router.post("/me/children", response_model=ChildrenResponse, status_code=status.HTTP_201_CREATED)
 def create_child(
     child_data: ChildrenCreate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Create a new child for current user"""
@@ -93,7 +99,7 @@ def create_child(
 def update_child(
     child_id: UUID,
     child_data: ChildrenUpdate,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Update a child"""
@@ -121,7 +127,7 @@ def update_child(
 @router.delete("/me/children/{child_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_child(
     child_id: UUID,
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_active_user_from_token),
     db: Session = Depends(get_db)
 ):
     """Delete a child"""
