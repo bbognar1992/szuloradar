@@ -85,7 +85,11 @@ const Header = memo(function Header({ user, onLogout }: HeaderProps) {
                   ×
                 </button>
                 <nav className="hamburger-nav">
-                  <a href="#" className="hamburger-menu-item">
+                  <Link
+                    href="/profile"
+                    className="hamburger-menu-item"
+                    onClick={() => setHamburgerOpen(false)}
+                  >
                     <Image
                       src="/assets/account.png"
                       alt="Fiókom"
@@ -94,7 +98,7 @@ const Header = memo(function Header({ user, onLogout }: HeaderProps) {
                       height={24}
                     />
                     <span>Fiókom</span>
-                  </a>
+                  </Link>
                   <Link
                     href="/recommendation"
                     className="hamburger-menu-item"

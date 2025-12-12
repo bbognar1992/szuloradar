@@ -23,8 +23,8 @@ const SearchAndFilters = memo(function SearchAndFilters({
   title,
 }: SearchAndFiltersProps) {
   const pathname = usePathname();
-  const showTitle = title || (pathname === '/recommendation' ? 'Ajánlás beküldése' : undefined);
-  const showFilters = pathname !== '/recommendation';
+  const showTitle = title || (pathname === '/recommendation' ? 'Ajánlás beküldése' : pathname === '/profile' ? 'Fiókom' : undefined);
+  const showFilters = pathname !== '/recommendation' && pathname !== '/profile';
 
   return (
     <div className="w-full max-w-7xl mx-auto mb-8 px-0 lg:px-4">
@@ -54,9 +54,16 @@ const SearchAndFilters = memo(function SearchAndFilters({
             />
           </Link>
           {showTitle && (
-            <h1 className="text-xl font-bold text-gray-900 m-0">
-              {showTitle}
-            </h1>
+            <>
+              <h1 className="text-xl font-bold text-gray-900 m-0">
+                {showTitle}
+              </h1>
+              {pathname === '/profile' && (
+                <p className="text-sm text-gray-600 m-0">
+                  Személyes adatok
+                </p>
+              )}
+            </>
           )}
         </div>
 
@@ -70,6 +77,11 @@ const SearchAndFilters = memo(function SearchAndFilters({
               {pathname === '/recommendation' && (
                 <p className="text-gray-600 mt-2 mb-0">
                   Oszd meg velünk a kedvenc gyerekbarát helyedet!
+                </p>
+              )}
+              {pathname === '/profile' && (
+                <p className="text-gray-600 mt-2 mb-0">
+                  Személyes adatok
                 </p>
               )}
             </div>
