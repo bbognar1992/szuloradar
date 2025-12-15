@@ -18,11 +18,8 @@ export default function Footer() {
         <div className="footer-section">
           <h3>Követés</h3>
           <div className="social-links">
-            <a href="#" aria-label="Facebook">
+            <a href="https://www.facebook.com/people/Sz%C3%BCl%C5%91Radar/61583005027775/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               Facebook
-            </a>
-            <a href="#" aria-label="Instagram">
-              Instagram
             </a>
           </div>
         </div>
