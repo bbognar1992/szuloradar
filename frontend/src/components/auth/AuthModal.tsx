@@ -181,17 +181,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </form>
 
           <div className="mt-4 text-center">
-            {mode === 'login' ? (
-              <button
-                onClick={() => {
-                  setMode('register');
-                  setError('');
-                }}
-                className="text-sm text-teal-600 hover:text-teal-500 transition-colors cursor-pointer"
-              >
-                Nincs még fiókod? Regisztrálj
-              </button>
-            ) : (
+            {mode === 'register' && (
               <button
                 onClick={() => {
                   setMode('login');
