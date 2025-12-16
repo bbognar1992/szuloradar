@@ -64,7 +64,7 @@ def get_cities(db: Session = Depends(get_db)):
 @router.get("", response_model=PlaceListResponse)
 def get_places(
     pagination: PaginationParams = Depends(),
-    type_key: Optional[str] = Query(None, description="Filter by place type"),
+    type_key: Optional[int] = Query(None, description="Filter by place type ID"),
     search: Optional[str] = Query(None, description="Search in name and description"),
     city: Optional[str] = Query(None, description="Filter by city name"),
     min_rating: Optional[float] = Query(None, ge=0, le=5, description="Minimum rating"),
@@ -75,10 +75,8 @@ def get_places(
     query = db.query(Place).options(joinedload(Place.place_type), joinedload(Place.amenities)).filter(Place.is_active == True)
     
     # Filter by type
-    if type_key:
-        place_type = db.query(PlaceType).filter(PlaceType.type_key == type_key).first()
-        if place_type:
-            query = query.filter(Place.type_id == place_type.id)
+    if type_key is not None:
+        query = query.filter(Place.type_id == type_key)
     
     # Filter by city
     if city:
