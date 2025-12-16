@@ -7,7 +7,7 @@ export const getPlaces = async (params?: GetPlacesParams): Promise<PlaceListResp
   const queryParams = new URLSearchParams();
   if (params?.page) queryParams.append('page', params.page.toString());
   if (params?.page_size) queryParams.append('page_size', params.page_size.toString());
-  if (params?.type_key) queryParams.append('type_key', params.type_key);
+  if (params?.type_key !== undefined) queryParams.append('type_key', params.type_key.toString());
   if (params?.search) queryParams.append('search', params.search);
   if (params?.city) queryParams.append('city', params.city);
   if (params?.min_rating) queryParams.append('min_rating', params.min_rating.toString());

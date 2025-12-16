@@ -1,26 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getPlaceTypes, type PlaceType } from '@/lib/api/places';
 
 interface FilterTabsProps {
-  activeFilter: string;
-  onFilterChange: (filter: string) => void;
+  activeFilter: number | 'all';
+  onFilterChange: (filter: number | 'all') => void;
 }
-
-const filters = [
-  { key: 'all', label: 'Összes' },
-  { key: 'kávézó', label: '☕ Kávézó' },
-  { key: 'étterem', label: '🍽️ Étterem' },
-  { key: 'konditerem', label: '💪 Edzőterem' },
-  { key: 'szállás', label: '🏨 Szállás' },
-];
 
 export default function FilterTabs({
   activeFilter,
   onFilterChange,
 }: FilterTabsProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const activeFilterLabel = filters.find(f => f.key === activeFilter)?.label || 'Összes';
+  const [placeTypes, setPlaceTypes] = useState<PlaceType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPlaceTypes()
+      .then((types) => {
+        setPlaceTypes(types);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const filters = [
+    { id: 'all' as const, label: 'Összes' },
+    ...placeTypes.map((type: PlaceType) => ({
+      id: type.id as number,
+      label: `${type.icon || ''} ${type.display_name}`.trim(),
+    })),
+  ];
+
+  const activeFilterLabel = filters.find(f => f.id === activeFilter)?.label || 'Összes';
 
   return (
     <div className="filters-tabs w-full lg:w-auto relative">
@@ -49,23 +64,27 @@ export default function FilterTabs({
               onClick={() => setIsDropdownOpen(false)}
             />
             <div className="absolute z-20 mt-2 w-full bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
-              {filters.map((filter) => (
-                <button
-                  key={filter.key}
-                  type="button"
-                  onClick={() => {
-                    onFilterChange(filter.key);
-                    setIsDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors ${
-                    activeFilter === filter.key
-                      ? 'bg-teal-50 text-teal-600'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
+              {loading ? (
+                <div className="px-4 py-3 text-sm text-gray-500">Betöltés...</div>
+              ) : (
+                filters.map((filter) => (
+                  <button
+                    key={filter.id}
+                    type="button"
+                    onClick={() => {
+                      onFilterChange(filter.id);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors ${
+                      activeFilter === filter.id
+                        ? 'bg-teal-50 text-teal-600'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))
+              )}
             </div>
           </>
         )}
@@ -74,20 +93,24 @@ export default function FilterTabs({
       {/* Desktop Tabs */}
       <div className="hidden lg:block">
         <div className="filters-tabs flex items-center gap-2 bg-gray-50 p-1.5 rounded-xl border border-gray-200">
-          {filters.map((filter) => (
-            <button
-              key={filter.key}
-              type="button"
-              onClick={() => onFilterChange(filter.key)}
-              className={`filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
-                activeFilter === filter.key
-                  ? 'bg-white text-teal-600 shadow-sm active'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              {filter.label}
-            </button>
-          ))}
+          {loading ? (
+            <div className="px-4 py-2 text-sm text-gray-500">Betöltés...</div>
+          ) : (
+            filters.map((filter) => (
+              <button
+                key={filter.id}
+                type="button"
+                onClick={() => onFilterChange(filter.id)}
+                className={`filter-tab px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                  activeFilter === filter.id
+                    ? 'bg-white text-teal-600 shadow-sm active'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -37,7 +37,7 @@ export interface PlaceListResponse {
 export interface GetPlacesParams {
   page?: number;
   page_size?: number;
-  type_key?: string;
+  type_key?: number;
   search?: string;
   city?: string;
   min_rating?: number;

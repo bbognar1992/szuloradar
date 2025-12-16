@@ -3,19 +3,19 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 interface SearchContextType {
-  typeFilter: string | undefined;
+  typeFilter: number | undefined;
   city: string | undefined;
-  setTypeFilter: (filter: string | undefined) => void;
+  setTypeFilter: (filter: number | undefined) => void;
   setCity: (city: string | undefined) => void;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export function SearchProvider({ children }: { children: ReactNode }) {
-  const [typeFilter, setTypeFilterState] = useState<string | undefined>(undefined);
+  const [typeFilter, setTypeFilterState] = useState<number | undefined>(undefined);
   const [city, setCityState] = useState<string | undefined>(undefined);
 
-  const setTypeFilter = useCallback((filter: string | undefined) => {
+  const setTypeFilter = useCallback((filter: number | undefined) => {
     setTypeFilterState(filter);
   }, []);
 
