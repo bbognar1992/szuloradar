@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearch } from '@/contexts/SearchContext';
 import { getSavedPlaces, unsavePlace, type SavedPlace } from '@/lib/api/interactions';
+import { getPlaceTypes } from '@/lib/api/places';
 import PlaceList from '@/components/places/PlaceList';
 import type { Place } from '@/types/place';
 
@@ -17,6 +18,22 @@ export default function MyListPage() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [typeKeyToIdMap, setTypeKeyToIdMap] = useState<Map<string, number>>(new Map());
+
+  // Fetch place types to create type_key -> id mapping
+  useEffect(() => {
+    getPlaceTypes()
+      .then((types) => {
+        const map = new Map<string, number>();
+        types.forEach((type) => {
+          map.set(type.type_key, type.id);
+        });
+        setTypeKeyToIdMap(map);
+      })
+      .catch((err) => {
+        console.error('Failed to load place types:', err);
+      });
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -75,13 +92,16 @@ export default function MyListPage() {
       });
     }
 
-    // Filter by type
+    // Filter by type - compare place's type_key ID with typeFilter
     if (typeFilter) {
-      filtered = filtered.filter((place) => place.type_key === typeFilter);
+      filtered = filtered.filter((place) => {
+        const placeTypeId = typeKeyToIdMap.get(place.type_key);
+        return placeTypeId === typeFilter;
+      });
     }
 
     return filtered;
-  }, [savedPlaces, city, typeFilter]);
+  }, [savedPlaces, city, typeFilter, typeKeyToIdMap]);
 
   const handleUnsave = async (placeId: string) => {
     try {

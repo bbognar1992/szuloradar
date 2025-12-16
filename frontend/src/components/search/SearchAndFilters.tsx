@@ -8,8 +8,8 @@ import CityAutocomplete from './CityAutocomplete';
 import FilterTabs from './FilterTabs';
 
 interface SearchAndFiltersProps {
-  activeFilter: string;
-  onFilterChange: (filter: string) => void;
+  activeFilter: number | 'all';
+  onFilterChange: (filter: number | 'all') => void;
   city?: string;
   onCityChange: (city: string) => void;
   title?: string;

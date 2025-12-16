@@ -74,7 +74,7 @@ def get_places(
     """Get list of places with filtering and pagination"""
     query = db.query(Place).options(joinedload(Place.place_type), joinedload(Place.amenities)).filter(Place.is_active == True)
     
-    # Filter by type
+    # Filter by type ID
     if type_key is not None:
         query = query.filter(Place.type_id == type_key)
     

@@ -16,7 +16,7 @@ const ClientLayout = memo(function ClientLayout({ children }: { children: React.
       <div className="container">
         <Header user={user} onLogout={logout} />
         <SearchAndFilters
-          activeFilter={typeFilter || 'all'}
+          activeFilter={typeFilter ?? 'all'}
           onFilterChange={(filter) => setTypeFilter(filter === 'all' ? undefined : filter)}
           city={city}
           onCityChange={(selectedCity) => setCity(selectedCity || undefined)}
