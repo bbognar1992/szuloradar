@@ -12,21 +12,6 @@ from datetime import datetime
 from alembic import op
 import sqlalchemy as sa
 
-# Import the same password hashing function used in auth.py
-# This ensures the migration uses the exact same hashing logic
-# Note: alembic runs migrations from the backend directory, so this import should work
-try:
-    from auth import get_password_hash
-except ImportError:
-    # Fallback: if import fails, add backend directory to path
-    import sys
-    import os
-    # Migration file is in backend/alembic/versions/, so go up 3 levels to get backend/
-    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    if backend_dir not in sys.path:
-        sys.path.insert(0, backend_dir)
-    from auth import get_password_hash
-
 # revision identifiers, used by Alembic.
 revision: str = '7bb6cf7c0f3d'
 down_revision: Union[str, None] = '79b2562bbe52'
@@ -40,6 +25,20 @@ TEST_USER_ID = "550e8400-e29b-41d4-a716-446655440000"  # Fixed UUID for test use
 
 
 def upgrade() -> None:
+    # Import here to avoid loading config.py at module level (which requires env vars)
+    # This ensures the migration can be scanned by Alembic without needing env vars
+    try:
+        from auth import get_password_hash
+    except ImportError:
+        # Fallback: if import fails, add backend directory to path
+        import sys
+        import os
+        # Migration file is in backend/alembic/versions/, so go up 3 levels to get backend/
+        backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        if backend_dir not in sys.path:
+            sys.path.insert(0, backend_dir)
+        from auth import get_password_hash
+    
     # Use the same password hashing function as auth.py
     # This ensures 100% compatibility between migration and authentication
     password_hash = get_password_hash(TEST_USER_PASSWORD)
