@@ -194,6 +194,110 @@ def get_place(place_id: UUID, db: Session = Depends(get_db)):
     }
 
 
+@router.post("/bulk_insert", response_model=List[PlaceResponse], status_code=status.HTTP_201_CREATED)
+def bulk_insert(
+    places_data: List[PlaceCreate],
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """Bulk insert multiple places"""
+    if not places_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Empty list of places provided"
+        )
+    
+    # Get all unique type_keys and amenity_keys upfront for efficiency
+    type_keys = {place.type_key for place in places_data}
+    all_amenity_keys = set()
+    for place in places_data:
+        all_amenity_keys.update(place.amenity_keys)
+    
+    # Fetch all place types and amenities in one query
+    place_types = {pt.type_key: pt for pt in db.query(PlaceType).filter(PlaceType.type_key.in_(type_keys)).all()}
+    amenities_map = {a.amenity_key: a for a in db.query(Amenity).filter(Amenity.amenity_key.in_(all_amenity_keys)).all()}
+    
+    # Validate all place types exist
+    missing_types = type_keys - set(place_types.keys())
+    if missing_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Place types not found: {', '.join(missing_types)}"
+        )
+    
+    # Create places
+    created_places = []
+    
+    for place_data in places_data:
+        place_type = place_types[place_data.type_key]
+        
+        place = Place(
+            name=place_data.name,
+            type_id=place_type.id,
+            address=place_data.address,
+            phone=place_data.phone,
+            hours=place_data.hours,
+            description=place_data.description,
+            maps_link=place_data.maps_link,
+            latitude=place_data.latitude,
+            longitude=place_data.longitude,
+            is_approved=False  # Needs approval
+        )
+        db.add(place)
+        db.flush()  # Flush to get the ID
+        
+        # Set amenities for this place
+        if place_data.amenity_keys:
+            place_amenities = [amenities_map[key] for key in place_data.amenity_keys if key in amenities_map]
+            place.amenities = place_amenities
+        
+        created_places.append(place)
+    
+    # Commit all places at once
+    db.commit()
+    
+    # Reload all places with relationships
+    place_ids = [place.id for place in created_places]
+    places = db.query(Place).options(
+        joinedload(Place.place_type),
+        joinedload(Place.amenities)
+    ).filter(Place.id.in_(place_ids)).all()
+    
+    # Format response
+    place_responses = []
+    for place in places:
+        place_responses.append({
+            "id": place.id,
+            "name": place.name,
+            "type_key": place.place_type.type_key,
+            "type_display_name": place.place_type.display_name,
+            "type_icon": place.place_type.icon,
+            "rating": place.rating,
+            "address": place.address,
+            "phone": place.phone,
+            "hours": place.hours,
+            "description": place.description,
+            "maps_link": place.maps_link,
+            "latitude": place.latitude,
+            "longitude": place.longitude,
+            "is_approved": place.is_approved,
+            "is_active": place.is_active,
+            "created_at": place.created_at,
+            "updated_at": place.updated_at,
+            "amenities": [
+                {
+                    "id": amenity.id,
+                    "amenity_key": amenity.amenity_key,
+                    "display_name": amenity.display_name,
+                    "icon": amenity.icon
+                }
+                for amenity in place.amenities
+            ]
+        })
+    
+    return place_responses
+
+
 @router.post("", response_model=PlaceResponse, status_code=status.HTTP_201_CREATED)
 def create_place(
     place_data: PlaceCreate,
