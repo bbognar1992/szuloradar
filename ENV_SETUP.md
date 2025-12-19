@@ -32,6 +32,9 @@
 - `ACCESS_TOKEN_EXPIRE_MINUTES` - Token expiration (default: 30)
 - `DEBUG` - Debug mode (default: True for dev)
 - `CORS_ORIGINS` - Allowed CORS origins (JSON array)
+- `LOAD_DEV_DATA` - Load development data on startup (default: true for dev, false for production)
+  - When set to `true`, automatically loads places from `backend/dev_data/places.json` after migrations
+  - Only use in development environments
 
 ## Example .env File
 

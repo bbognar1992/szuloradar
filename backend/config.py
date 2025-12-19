@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     debug: bool = True
     cors_origins: Union[List[str], str] = ["http://localhost:3000", "http://localhost:3001"]
     
+    # Development
+    load_dev_data: bool = False  # Set to True to load development data on startup
+    
     model_config = SettingsConfigDict(
         # Use OS environment variables only (not .env file)
         # For local development, load .env file using python-dotenv or export variables

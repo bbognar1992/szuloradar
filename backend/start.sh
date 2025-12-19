@@ -28,6 +28,12 @@ fi
 echo "Applying Alembic migrations..."
 alembic upgrade head
 
+# Load development data if LOAD_DEV_DATA is set to true
+if [ "${LOAD_DEV_DATA:-false}" = "true" ]; then
+    echo "Loading development data..."
+    python3 load_dev_data.py || echo "Warning: Failed to load development data"
+fi
+
 echo "Starting application..."
 exec "$@"
 

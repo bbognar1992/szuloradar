@@ -33,6 +33,7 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
       DEBUG: ${DEBUG}
       CORS_ORIGINS: ${CORS_ORIGINS}
+      LOAD_DEV_DATA: ${LOAD_DEV_DATA}
     ports:
       - "${BACKEND_PORT}:8000"
     depends_on:
